@@ -1,0 +1,17 @@
+{
+  "environment": "Chromium headless / Streamlit local / PDFs sint\u00e9ticos",
+  "preview_before_approval_records": 0,
+  "after_approval_records": 3,
+  "historical_rows_preserved": 2,
+  "duplicates_ignored": 1,
+  "invalid_files_preserved": 1,
+  "archived_pdfs": 3,
+  "pending_pdfs": 2,
+  "xlsx_columns": 10,
+  "xlsx_data_rows": 5,
+  "browser_reload_no_new_records": true,
+  "browser_errors": [],
+  "compact_viewport_action_visible": true,
+  "google_drive_live": false,
+  "human_acceptance": false
+}

@@ -20,7 +20,7 @@ Ferramenta de inteligência operacional e automação para o Gabinete do Denis G
 
 - **Etapa 0:** descoberta funcional concluída.
 - **Etapa 1:** prova técnica executada nesta branch, **APROVADA COM RESSALVAS**. Evidências, mapeamento, arquitetura e limites em [docs/ETAPA1.md](docs/ETAPA1.md). Contrato de autonomia e limites na seção 9 da Issue #1; pacote operacional fornecido pelo responsável usado durante o bloqueio de acesso.
-- **Etapa 2:** construção de protótipo funcional, depende de nova autorização.
+- **Etapa 2:** protótipo funcional implementado nesta branch, **APROVADO COM RESSALVAS**. Uso, reprodução, evidências e pendências em [docs/ETAPA2.md](docs/ETAPA2.md). Integração Google real e hospedagem aguardam os gates específicos.
 - **Etapa 3:** homologação, com rubrica de **PROTÓTIPO FECHADO** e aceite humano explícito.
 - **Etapa 4:** ativação operacional, exige autorização específica.
 
@@ -34,4 +34,4 @@ Ferramenta de inteligência operacional e automação para o Gabinete do Denis G
 6. **Usuário final 100% leigo:** sem terminal, instalação de Python, VBA, configuração de tokens ou comandos. Interface via navegador e linguagem simples.
 7. **Encerre cada etapa por evidência**, com veredito e gate humano previstos na Issue #1. Não avance automaticamente para a etapa seguinte.
 
-> A prova técnica da Etapa 1 **não representa implementação do MVP, homologação ou autorização da Etapa 2**.
+> Este protótipo usa somente ambiente de teste. **Não representa PROTÓTIPO FECHADO, autorização da Etapa 3 ou liberação de produção.**

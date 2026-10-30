@@ -1,0 +1,22 @@
+{
+  "data": "100 PDFs inteiramente sint\u00e9ticos / 300 p\u00e1ginas / 50 de cada layout",
+  "preview_rows": 100,
+  "records_before_approval": 0,
+  "result": {
+    "approved_at": "2026-10-30T21:16:36.937172+00:00",
+    "found": 100,
+    "inserted": 100,
+    "ignored": 0,
+    "failures": 0,
+    "archived": 100,
+    "archive_failures": []
+  },
+  "repeat_found": 0,
+  "xlsx_data_rows": 100,
+  "seconds": {
+    "scan_and_extract": 0.097841,
+    "commit_and_local_archive": 0.005993,
+    "repeat": 0.000177
+  },
+  "google_network_included": false
+}

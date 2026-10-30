@@ -41,7 +41,7 @@ class ExtractionTests(unittest.TestCase):
                 self.assertEqual(extract(p), parse_text(text(events=events), 'D:20261028010000Z'))
 
     def test_metadata_missing_malformed_and_naive(self):
-        for raw in [None, '', 'D:20260230000000Z', 'D:20261028010000', 'invalid']:
+        for raw in [None, 123, '', 'D:20260230000000Z', 'D:20261028010000', 'invalid']:
             self.assertIsNone(creation_time(raw))
             self.assertIn('ausente_created', parse_text(text(), raw).warnings)
 
@@ -52,6 +52,36 @@ class ExtractionTests(unittest.TestCase):
                  'D:20180101010000Z': '2017-12-31T23:00:00-02:00'}
         for raw, expected in cases.items():
             self.assertEqual(creation_time(raw).isoformat(), expected)
+
+    def test_invalid_offset_components_leave_date_missing(self):
+        for sign in ['+', '-']:
+            for components in ['0060', '0099', '2360', '2400', '9900']:
+                for zone in [components, components[:2] + "'" + components[2:] + "'"]:
+                    raw = 'D:20261028040000' + sign + zone
+                    with self.subTest(raw=raw):
+                        self.assertIsNone(creation_time(raw))
+                        record = parse_text(text(), raw)
+                        self.assertEqual(record.created, '')
+                        self.assertIn('ausente_created', record.warnings)
+
+    def test_valid_offset_components_convert_to_sao_paulo(self):
+        cases = {'+0000': '2026-10-28T01:00:00-03:00',
+                 '-0000': '2026-10-28T01:00:00-03:00',
+                 '+0059': '2026-10-28T00:01:00-03:00',
+                 '-0059': '2026-10-28T01:59:00-03:00',
+                 "+05'30'": '2026-10-27T19:30:00-03:00',
+                 "-03'30'": '2026-10-28T04:30:00-03:00',
+                 "+23'59'": '2026-10-27T01:01:00-03:00',
+                 "-23'59'": '2026-10-29T00:59:00-03:00'}
+        for zone, expected in cases.items():
+            raw = 'D:20261028040000' + zone
+            with self.subTest(raw=raw):
+                converted = creation_time(raw)
+                self.assertEqual(converted.tzinfo.key, 'America/Sao_Paulo')
+                self.assertEqual(converted.isoformat(), expected)
+                record = parse_text(text(), raw)
+                self.assertEqual(record.created, expected[:10])
+                self.assertNotIn('ausente_created', record.warnings)
 
     def test_optional_missing(self):
         r = parse_text(text().replace('Enquadramento: Manutencao sintetica\n', ''), None)
