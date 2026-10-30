@@ -1,0 +1,9 @@
+{
+  "review_scope": "todos os arquivos versionados, incluindo relatórios e log de testes",
+  "private_reference_values_found": false,
+  "real_pdf_creation_timestamps_found": false,
+  "original_documents_versioned": false,
+  "synthetic_dates_labeled": true,
+  "tests_passed": 22,
+  "benchmark_documents": 100
+}

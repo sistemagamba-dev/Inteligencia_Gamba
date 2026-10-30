@@ -19,7 +19,7 @@ Ferramenta de inteligência operacional e automação para o Gabinete do Denis G
 ## Estado do projeto
 
 - **Etapa 0:** descoberta funcional concluída.
-- **Etapa 1:** prova técnica de extração, metadados, mapeamento, histórico, duplicidades e lote, **ainda não iniciada**. Contrato de autonomia e limites na seção 9 da Issue #1.
+- **Etapa 1:** prova técnica executada nesta branch, **APROVADA COM RESSALVAS**. Evidências, mapeamento, arquitetura e limites em [docs/ETAPA1.md](docs/ETAPA1.md). Contrato de autonomia e limites na seção 9 da Issue #1; pacote operacional fornecido pelo responsável usado durante o bloqueio de acesso.
 - **Etapa 2:** construção de protótipo funcional, depende de nova autorização.
 - **Etapa 3:** homologação, com rubrica de **PROTÓTIPO FECHADO** e aceite humano explícito.
 - **Etapa 4:** ativação operacional, exige autorização específica.
@@ -34,4 +34,4 @@ Ferramenta de inteligência operacional e automação para o Gabinete do Denis G
 6. **Usuário final 100% leigo:** sem terminal, instalação de Python, VBA, configuração de tokens ou comandos. Interface via navegador e linguagem simples.
 7. **Encerre cada etapa por evidência**, com veredito e gate humano previstos na Issue #1. Não avance automaticamente para a etapa seguinte.
 
-> Este README inicializa o repositório. **Não representa a implementação do MVP nem a aprovação da Etapa 1.**
+> A prova técnica da Etapa 1 **não representa implementação do MVP, homologação ou autorização da Etapa 2**.

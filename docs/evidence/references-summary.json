@@ -1,0 +1,96 @@
+{
+  "synthetic_creation_examples": [
+    {
+      "source": "synthetic",
+      "creation_utc": "2030-01-02T01:15:00Z",
+      "creation_local": "2030-01-01T22:15:00-03:00"
+    }
+  ],
+  "samples": [
+    {
+      "sample": "PDF-01",
+      "pages": 2,
+      "type": "Zeladoria",
+      "creation_metadata_present": true,
+      "timezone_conversion_verified": true,
+      "mapped_fields_present": 8,
+      "optional_B_blank": true,
+      "warnings": [],
+      "in_history": false
+    },
+    {
+      "sample": "PDF-02",
+      "pages": 2,
+      "type": "Zeladoria",
+      "creation_metadata_present": true,
+      "timezone_conversion_verified": true,
+      "mapped_fields_present": 8,
+      "optional_B_blank": true,
+      "warnings": [],
+      "in_history": false
+    },
+    {
+      "sample": "PDF-03",
+      "pages": 2,
+      "type": "Zeladoria",
+      "creation_metadata_present": true,
+      "timezone_conversion_verified": true,
+      "mapped_fields_present": 8,
+      "optional_B_blank": true,
+      "warnings": [],
+      "in_history": false
+    },
+    {
+      "sample": "PDF-04",
+      "pages": 2,
+      "type": "Zeladoria",
+      "creation_metadata_present": true,
+      "timezone_conversion_verified": true,
+      "mapped_fields_present": 8,
+      "optional_B_blank": true,
+      "warnings": [],
+      "in_history": true
+    },
+    {
+      "sample": "PDF-05",
+      "pages": 4,
+      "type": "Eventos",
+      "creation_metadata_present": true,
+      "timezone_conversion_verified": true,
+      "mapped_fields_present": 8,
+      "optional_B_blank": true,
+      "warnings": [],
+      "in_history": false
+    },
+    {
+      "sample": "PDF-06",
+      "pages": 2,
+      "type": "Zeladoria",
+      "creation_metadata_present": true,
+      "timezone_conversion_verified": true,
+      "mapped_fields_present": 8,
+      "optional_B_blank": true,
+      "warnings": [],
+      "in_history": false
+    }
+  ],
+  "pdf_extraction_seconds": 0.110969,
+  "history": {
+    "protocol_rows": 3160,
+    "normalized_unique": 3106,
+    "duplicate_excess": 54,
+    "reference_duplicate_confirmed": true,
+    "historical_A_J_values_preserved": true
+  },
+  "real_reference_trial": {
+    "first": {
+      "inserted": 5,
+      "ignored": 1
+    },
+    "repeat": {
+      "inserted": 0,
+      "ignored": 6
+    }
+  },
+  "source_integrity_sha256_unchanged": true
+}
