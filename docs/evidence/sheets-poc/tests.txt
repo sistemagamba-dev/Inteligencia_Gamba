@@ -1,0 +1,60 @@
+test_ambiguous_address_no_guess (tests.test_janus.ExtractionTests.test_ambiguous_address_no_guess) ... ok
+test_conflicting_protocol_blocks (tests.test_janus.ExtractionTests.test_conflicting_protocol_blocks) ... ok
+test_event_mapping (tests.test_janus.ExtractionTests.test_event_mapping) ... ok
+test_invalid_offset_components_leave_date_missing (tests.test_janus.ExtractionTests.test_invalid_offset_components_leave_date_missing) ... ok
+test_metadata_missing_malformed_and_naive (tests.test_janus.ExtractionTests.test_metadata_missing_malformed_and_naive) ... ok
+test_normalization (tests.test_janus.ExtractionTests.test_normalization) ... ok
+test_optional_missing (tests.test_janus.ExtractionTests.test_optional_missing) ... ok
+test_pdf_round_trip_both_layouts (tests.test_janus.ExtractionTests.test_pdf_round_trip_both_layouts) ... ok
+test_timezone_midnight_and_offsets (tests.test_janus.ExtractionTests.test_timezone_midnight_and_offsets) ... ok
+test_unknown_type_reported (tests.test_janus.ExtractionTests.test_unknown_type_reported) ... ok
+test_valid_offset_components_convert_to_sao_paulo (tests.test_janus.ExtractionTests.test_valid_offset_components_convert_to_sao_paulo) ... ok
+test_zeladoria_mapping (tests.test_janus.ExtractionTests.test_zeladoria_mapping) ... ok
+test_read_only_history_and_sequence (tests.test_janus.HistoryTests.test_read_only_history_and_sequence) ... ok
+test_wrong_headers_fail (tests.test_janus.HistoryTests.test_wrong_headers_fail) ... ok
+test_commit_before_archive_failure_restart (tests.test_janus.PersistenceTests.test_commit_before_archive_failure_restart) ... ok
+test_duplicate_same_batch_and_repeat (tests.test_janus.PersistenceTests.test_duplicate_same_batch_and_repeat) ... ok
+test_export_preserves_duplicates_and_literal_formula (tests.test_janus.PersistenceTests.test_export_preserves_duplicates_and_literal_formula) ... ok
+test_historical_duplicate_and_variants_preserved (tests.test_janus.PersistenceTests.test_historical_duplicate_and_variants_preserved) ... ok
+test_human_approval_required (tests.test_janus.PersistenceTests.test_human_approval_required) ... ok
+test_invalid_batch_entirely_blocked (tests.test_janus.PersistenceTests.test_invalid_batch_entirely_blocked) ... ok
+test_missing_optional_can_be_approved (tests.test_janus.PersistenceTests.test_missing_optional_can_be_approved) ... ok
+test_move_then_failure_retried_idempotently (tests.test_janus.PersistenceTests.test_move_then_failure_retried_idempotently) ... ok
+test_transaction_rollback_does_not_archive (tests.test_janus.PersistenceTests.test_transaction_rollback_does_not_archive) ... ok
+test_two_connections_no_overwrite (tests.test_janus.PersistenceTests.test_two_connections_no_overwrite) ... ok
+test_approval_and_invalid_batch_do_not_write (tests.test_sheets_poc.SheetsProofTests.test_approval_and_invalid_batch_do_not_write) ... ok
+test_batch_reuse_and_file_rebinding_are_rejected (tests.test_sheets_poc.SheetsProofTests.test_batch_reuse_and_file_rebinding_are_rejected) ... ok
+test_double_click_is_blocked_in_same_process (tests.test_sheets_poc.SheetsProofTests.test_double_click_is_blocked_in_same_process) ... ok
+test_existing_drive_archives_only_confirmed_data_and_recovers (tests.test_sheets_poc.SheetsProofTests.test_existing_drive_archives_only_confirmed_data_and_recovers) ... ok
+test_history_duplicates_blank_dates_and_export_are_preserved (tests.test_sheets_poc.SheetsProofTests.test_history_duplicates_blank_dates_and_export_are_preserved) ... ok
+test_invalid_subrequest_is_atomic (tests.test_sheets_poc.SheetsProofTests.test_invalid_subrequest_is_atomic) ... ok
+test_late_import_and_large_cell_are_rejected (tests.test_sheets_poc.SheetsProofTests.test_late_import_and_large_cell_are_rejected) ... ok
+test_late_request_after_retry_does_not_overwrite_next_batch (tests.test_sheets_poc.SheetsProofTests.test_late_request_after_retry_does_not_overwrite_next_batch) ... ok
+test_negative_control_cold_restart_can_overwrite_unconfirmed_reservation (tests.test_sheets_poc.SheetsProofTests.test_negative_control_cold_restart_can_overwrite_unconfirmed_reservation) ... ok
+test_reprocessing_and_intralot_duplicates_are_ignored (tests.test_sheets_poc.SheetsProofTests.test_reprocessing_and_intralot_duplicates_are_ignored) ... ok
+test_timeout_after_commit_is_reconciled (tests.test_sheets_poc.SheetsProofTests.test_timeout_after_commit_is_reconciled) ... ok
+test_timeout_before_commit_repeats_fixed_positions (tests.test_sheets_poc.SheetsProofTests.test_timeout_before_commit_repeats_fixed_positions) ... ok
+test_clicks_edit_approval_and_export (tests.test_ui.InterfaceTests.test_clicks_edit_approval_and_export) ... 2026-10-30 22:07:37.430 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-30 22:07:37.680 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_configuration_failure_is_plain_portuguese (tests.test_ui.InterfaceTests.test_configuration_failure_is_plain_portuguese) ... 2026-10-30 22:07:37.708 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_archive_verify_after_move_and_retry_target (tests.test_workflow.GoogleContractTests.test_archive_verify_after_move_and_retry_target) ... ok
+test_modified_content_permission_failure_and_wrong_root (tests.test_workflow.GoogleContractTests.test_modified_content_permission_failure_and_wrong_root) ... ok
+test_pages_and_parent_scoped_download (tests.test_workflow.GoogleContractTests.test_pages_and_parent_scoped_download) ... ok
+test_after_commit_failure_and_restart (tests.test_workflow.WorkflowTests.test_after_commit_failure_and_restart) ... ok
+test_approval_invalid_protocol_date_and_no_partial_write (tests.test_workflow.WorkflowTests.test_approval_invalid_protocol_date_and_no_partial_write) ... ok
+test_concurrent_previews_never_duplicate_or_archive_rejected_files (tests.test_workflow.WorkflowTests.test_concurrent_previews_never_duplicate_or_archive_rejected_files) ... ok
+test_duplicate_after_manual_edit_remains_input (tests.test_workflow.WorkflowTests.test_duplicate_after_manual_edit_remains_input) ... ok
+test_end_to_end_history_optional_edit_export_restart (tests.test_workflow.WorkflowTests.test_end_to_end_history_optional_edit_export_restart) ... ok
+test_history_date_duplicate_backup_restore_and_refusal_replace (tests.test_workflow.WorkflowTests.test_history_date_duplicate_backup_restore_and_refusal_replace) ... ok
+test_kernel_lock_between_independent_processes (tests.test_workflow.WorkflowTests.test_kernel_lock_between_independent_processes) ... ok
+test_modified_pdf_before_approval_or_after_commit_preserved (tests.test_workflow.WorkflowTests.test_modified_pdf_before_approval_or_after_commit_preserved) ... ok
+test_move_confirmation_lost_is_idempotent (tests.test_workflow.WorkflowTests.test_move_confirmation_lost_is_idempotent) ... ok
+test_one_archive_failure_does_not_stop_other_files (tests.test_workflow.WorkflowTests.test_one_archive_failure_does_not_stop_other_files) ... ok
+test_persistent_history_preserves_datetime_cells_and_rejects_replacement (tests.test_workflow.WorkflowTests.test_persistent_history_preserves_datetime_cells_and_rejects_replacement) ... ok
+
+----------------------------------------------------------------------
+Ran 52 tests in 0.589s
+
+OK
