@@ -28,7 +28,7 @@ def valid_protocol(value: object) -> bool:
 
 def creation_time(raw: str | None) -> datetime | None:
     """Não presume fuso para metadados sem offset explícito."""
-    if not raw:
+    if not isinstance(raw, str) or not raw:
         return None
     m = re.fullmatch(r"D:(\d{14})(Z|[+-]\d{2}'?\d{2}'?)", raw)
     if not m:

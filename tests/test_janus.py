@@ -41,7 +41,7 @@ class ExtractionTests(unittest.TestCase):
                 self.assertEqual(extract(p), parse_text(text(events=events), 'D:20261028010000Z'))
 
     def test_metadata_missing_malformed_and_naive(self):
-        for raw in [None, '', 'D:20260230000000Z', 'D:20261028010000', 'invalid']:
+        for raw in [None, 123, '', 'D:20260230000000Z', 'D:20261028010000', 'invalid']:
             self.assertIsNone(creation_time(raw))
             self.assertIn('ausente_created', parse_text(text(), raw).warnings)
 
