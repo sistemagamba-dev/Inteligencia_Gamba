@@ -1,12 +1,14 @@
-"""Prova de operador único, sem HTTP, credenciais ou integração ao app.
+"""Prova append-only: um operador, sem HTTP/credenciais ou alteração do app.
 
-Escritas RAW em posições fixas: resposta perdida não autoriza novo append.
-Coordinator deve ser único no processo Streamlit. Não é lock distribuído.
+Cada grupo de registros termina com manifesto de contagem/hash. A base lógica
+considera somente grupos confirmados e conserva o primeiro protocolo novo.
+Nenhuma posição de escrita, reserva em memória, CAS ou aba versionada é usada.
 """
 from datetime import date
 import hashlib
 from io import BytesIO
 import json
+import re
 from threading import Lock
 
 from openpyxl import Workbook
@@ -24,145 +26,181 @@ class Unconfirmed(Exception):
 
 class Coordinator:
     def __init__(self):
-        self.lock = Lock()
-        self.pending = None
+        self.lock = Lock() # Conforto contra clique duplo; não sustenta a integridade.
+
+
+def fingerprint(value):
+    return hashlib.sha256(dumps(value).encode()).hexdigest()
 
 
 def read_snapshot(response):
-    tabs = {v['range'].split('!')[0]: v.get('values', []) for v in response['valueRanges']}
-    return {'history': [loads(r[0]) for r in tabs['historico']],
-            'history_source': tabs['origem'][0][0] if tabs['origem'] else None,
-            'records': tabs['novos'], 'receipts': {r[0]: r for r in tabs['lotes']},
-            'receipt_rows': len(tabs['lotes']), 'archived': tabs['arquivados']}
+    # values.get omite células vazias no fim de cada linha.
+    rows = [list(r) + [''] * (6-len(r)) for r in response.get('values', [])]
+    history, history_source, records, receipts, acknowledgements = [], None, {}, {}, set()
+    for i, row in enumerate(rows):
+        if len(row) != 6:
+            raise ValueError('Linha de diário incompatível')
+        kind = row[0]
+        if kind in ('I', 'C'):
+            count = int(row[3])
+            block = rows[i-count:i] if count else []
+            expected = 'H' if kind == 'I' else 'R'
+            if count < 0 or len(block) != count or any(r[0] != expected or r[1] != row[1] for r in block):
+                raise ValueError('Grupo incompleto: não exportar/arquivar')
+            if fingerprint(block) != row[2]:
+                raise ValueError('Hash do grupo divergente')
+            if kind == 'I':
+                source = row[1]
+                if history_source and history_source != source:
+                    raise ValueError('Históricos conflitantes: requer intervenção')
+                history_source = source
+                imported = [loads(r[4]) for r in block]
+                if history and imported != history:
+                    raise ValueError('Histórico divergente')
+                history = imported
+                continue
+            if not history_source:
+                raise ValueError('Histórico deve preceder registros novos')
+            if row[1] in receipts and receipts[row[1]] != int(row[4]):
+                raise ValueError('Manifestos conflitantes')
+            receipts[row[1]] = int(row[4])
+            historical_keys = {normalize(r[4]) for r in history if r[4]}
+            for event in block:
+                payload, source = loads(event[4]), loads(event[5])
+                key = normalize(payload[4])
+                if not valid_protocol(payload[4]) or key != event[2] or event[3] != 'JANUS:' + key:
+                    raise ValueError('Identificador de registro divergente')
+                if key not in historical_keys and key not in records:
+                    records[key] = {'row': payload, 'record_id': event[3], 'batch_id':event[1],
+                                    'file_id':source['file_id'], 'digest':source['digest']}
+        elif kind == 'A':
+            acknowledgements.add(tuple(row[1:4]))
+        elif kind not in ('H', 'R'):
+            raise ValueError('Evento desconhecido')
+    return {'history':history, 'history_source':history_source, 'records':records,
+            'receipts':receipts, 'archived':acknowledgements, 'physical_rows':len(rows)}
 
 
 class SheetsProof:
-    def __init__(self, transport, coordinator):
-        self.transport, self.coordinator = transport, coordinator
+    def __init__(self, transport, coordinator=None):
+        self.transport, self.coordinator = transport, coordinator or Coordinator()
 
     def state(self):
         return read_snapshot(self.transport.get())
 
-    def _write(self, data):
-        body = {'valueInputOption': 'RAW', 'data': data}
-        if any(len(str(v)) > 50000 for update in data for row in update['values'] for v in row):
+    def _append(self, rows):
+        if any(len(str(v)) > 50000 for row in rows for v in row):
             raise ValueError('Célula excede 50 mil caracteres')
+        body = {'values':rows}
         if len(json.dumps(body, ensure_ascii=False).encode()) > 2_000_000:
             raise ValueError('Requisição excede 2 MB nesta prova')
-        return body
+        return self.transport.append(body, range='journal!A:F', valueInputOption='RAW',
+                                     insertDataOption='INSERT_ROWS')
 
     def import_history(self, source):
         h = read_history(BytesIO(source))
-        fingerprint = hashlib.sha256(source).hexdigest()
+        digest = hashlib.sha256(source).hexdigest()
         with self.coordinator.lock:
-            if self.coordinator.pending:
-                raise Unconfirmed('Resolva a gravação anterior')
             state = self.state()
             if state['history_source']:
-                if state['history_source'] != fingerprint:
+                if state['history_source'] != digest:
                     raise ValueError('Não substituir histórico')
                 return False
-            if state['records']:
-                raise ValueError('Importe o histórico primeiro')
-            data = [{'range': 'origem!A1', 'values': [[fingerprint]]}]
-            if h.rows:
-                data.append({'range': 'historico!A1', 'values': [[dumps(r)] for r in h.rows]})
-            self.transport.batch_update(self._write(data))
+            events = [['H',digest,str(i),'',dumps(row),''] for i,row in enumerate(h.rows)]
+            manifest = ['I',digest,fingerprint(events),str(len(events)),'','']
+            try:
+                self._append(events + [manifest])
+            except (TimeoutError, ConnectionError):
+                pass
+            if self.state()['history_source'] != digest:
+                raise Unconfirmed('Importação não confirmada; repetir a mesma fonte')
             return True
 
-    def approve(self, batch_id, items, *, approved=False):
+    def approve(self, items, *, approved=False):
         if not approved:
             raise ValueError('Aprovação humana obrigatória')
-        if not batch_id or not items:
-            raise ValueError('Lote vazio/sem ID')
-        for _, record, digest in items:
-            if not valid_protocol(record.protocol) or len(digest) != 64:
+        if not items:
+            raise ValueError('Lote vazio')
+        seen_files = set()
+        for file_id, record, digest in items:
+            if not valid_protocol(record.protocol) or not re.fullmatch(r'[0-9a-f]{64}',digest):
                 raise ValueError('Protocolo/hash inválido')
+            if file_id in seen_files:
+                raise ValueError('Arquivo repetido no lote')
+            seen_files.add(file_id)
             if record.created:
                 date.fromisoformat(record.created)
-        fingerprint = hashlib.sha256(dumps([(f,r.row(0),d) for f,r,d in items]).encode()).hexdigest()
+        # Identidade derivada dos dados aprovados, recuperável após perda de memória.
+        signatures = [(f,r.row(0),d) for f,r,d in items]
+        batch_id = fingerprint(sorted(signatures, key=lambda value: (value[0],dumps(value))))
         if not self.coordinator.lock.acquire(blocking=False):
             raise Busy('Processamento em andamento')
         try:
-            pending = self.coordinator.pending
-            if pending:
-                if pending['id'] != batch_id or pending['fingerprint'] != fingerprint:
-                    raise Unconfirmed('Confirme o lote anterior antes de iniciar outro')
-                plan = pending
-            else:
-                state = self.state()
-                receipt = state['receipts'].get(batch_id)
-                if receipt:
-                    if receipt[1] != fingerprint:
-                        raise ValueError('Lote reutilizado com conteúdo diferente')
-                    return loads(receipt[2])
-                known = {normalize(r[4]) for r in state['history'] if r[4]}
-                known.update(r[2] for r in state['records'])
-                bound = {r[1]:r[2] for r in state['records']}
-                orders = [int(r[0]) for r in state['history']
-                          if isinstance(r[0],(int,float)) and float(r[0]).is_integer()]
-                order = max([0]+orders) + 1 + len(state['records'])
-                result = {'inserted':0, 'ignored':0}
-                rows = []
+            state = self.state()
+            if not state['history_source']:
+                raise ValueError('Importe o histórico, mesmo vazio, antes de aprovar')
+            if batch_id not in state['receipts']:
+                known = {normalize(r[4]) for r in state['history'] if r[4]} | set(state['records'])
+                bound = {r['file_id']:key for key,r in state['records'].items()}
+                events = []
                 for file_id, record, digest in items:
                     key = normalize(record.protocol)
                     if file_id in bound and bound[file_id] != key:
                         raise ValueError('Arquivo vinculado a outro protocolo')
                     if key in known:
-                        result['ignored'] += 1
                         continue
-                    # Colunas técnicas da prova; Excel mantém apenas A:J originais.
-                    rows.append([dumps(record.row(order)),file_id,key,digest,batch_id])
-                    known.add(key); bound[file_id]=key
-                    order += 1; result['inserted'] += 1
-                updates = [{'range': f"lotes!A{state['receipt_rows']+1}",
-                            'values': [[batch_id,fingerprint,dumps(result)]]}]
-                if rows:
-                    updates.append({'range': f"novos!A{len(state['records'])+1}", 'values':rows})
-                plan = {'id':batch_id,'fingerprint':fingerprint,'result':result,'body':self._write(updates)}
-                # Preserva exatamente as posições/valores da tentativa incerta.
-                self.coordinator.pending = plan
-            try:
-                self.transport.batch_update(plan['body'])
-            except (TimeoutError, ConnectionError):
+                    events.append(['R',batch_id,key,'JANUS:'+key,dumps(record.row(0)),
+                                   dumps({'file_id':file_id,'digest':digest})])
+                    known.add(key)
+                commit = ['C',batch_id,fingerprint(events),str(len(events)),str(len(items)),'']
                 try:
-                    receipt = self.state()['receipts'].get(batch_id)
+                    self._append(events + [commit])
                 except (TimeoutError, ConnectionError):
-                    receipt = None
-                if not receipt or receipt[1] != fingerprint:
-                    raise Unconfirmed('Resultado incerto: repita somente este lote')
-            self.coordinator.pending = None
-            return plan['result']
+                    pass
+                state = self.state() # Resposta de escrita sozinha não determina vencedor lógico.
+            if batch_id not in state['receipts']:
+                raise Unconfirmed('Lote não confirmado; pode repetir sem reservar posições')
+            inserted = sum(r['batch_id'] == batch_id for r in state['records'].values())
+            return {'batch_id':batch_id, 'inserted':inserted,
+                    'ignored':state['receipts'][batch_id]-inserted}
         finally:
             self.coordinator.lock.release()
 
     def resume(self, drive):
         with self.coordinator.lock:
-            if self.coordinator.pending:
-                raise Unconfirmed('Confirme a gravação antes de arquivar')
             state = self.state()
-            moved, failures, updates = 0, [], []
-            for i, row in enumerate(state['records']):
-                if i < len(state['archived']) and state['archived'][i] == ['1']:
+            moved, failures, events = 0, [], []
+            for record in state['records'].values():
+                key = (record['record_id'],record['file_id'],record['digest'])
+                if key in state['archived']:
                     continue
-                if row[4] not in state['receipts']:
-                    raise Unconfirmed('Registro sem recibo; não arquivar')
                 try:
-                    drive.archive(row[1],row[3])
-                    updates.append({'range':f'arquivados!A{i+1}', 'values':[['1']]})
+                    drive.archive(record['file_id'],record['digest'])
+                    events.append(['A',*key,'',''])
                     moved += 1
                 except Exception:
-                    failures.append(row[1])
-            # Confirmação separada: replay tardio de dados não desfaz este estado.
-            if updates:
-                self.transport.batch_update(self._write(updates))
-            return {'archived':moved,'failures':failures}
+                    failures.append(record['file_id'])
+            if events:
+                try:
+                    self._append(events)
+                except (TimeoutError, ConnectionError):
+                    pass
+                confirmed = self.state()['archived']
+                if any(tuple(r[1:4]) not in confirmed for r in events):
+                    raise Unconfirmed('Movimento efetuado; confirmação pendente para retomada')
+            return {'archived':moved, 'failures':failures}
 
     def export(self, destination):
         state = self.state()
         book=Workbook(); sheet=book.active; sheet.title='JANUS 2026'
         sheet.append([]); sheet.append(HEADERS)
-        for row in state['history'] + [loads(r[0]) for r in state['records']]:
+        for row in state['history']:
+            sheet.append(row)
+        orders = [int(r[0]) for r in state['history']
+                  if isinstance(r[0],(int,float)) and float(r[0]).is_integer()]
+        start = max([0]+orders)+1
+        for order, record in enumerate(state['records'].values(), start):
+            row = record['row'].copy(); row[0] = order
             sheet.append(row)
         for row in sheet:
             for cell in row:

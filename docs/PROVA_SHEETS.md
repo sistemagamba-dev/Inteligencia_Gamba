@@ -1,3 +1,5 @@
+> Relatório histórico do commit `15c3b49`. A nova prova append-only está em [PROVA_SHEETS_APPEND.md](PROVA_SHEETS_APPEND.md).
+
 # Prova Sheets — operador único, Google simulado
 
 **Veredito: REPROVADO para substituir o SQLite neste estado.** O fluxo simples
