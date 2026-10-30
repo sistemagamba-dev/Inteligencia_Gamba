@@ -35,6 +35,8 @@ def creation_time(raw: str | None) -> datetime | None:
         return None
     try:
         zone = m[2].replace("'", '')
+        if zone != 'Z' and (int(zone[1:3]) > 23 or int(zone[3:5]) > 59):
+            return None
         offset = timedelta() if zone == 'Z' else timedelta(
             minutes=(int(zone[1:3]) * 60 + int(zone[3:5])) * (1 if zone[0] == '+' else -1))
         return datetime.strptime(m[1], '%Y%m%d%H%M%S').replace(
