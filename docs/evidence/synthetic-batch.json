@@ -1,0 +1,24 @@
+{
+  "pdfs": 100,
+  "pages": 300,
+  "layouts": {
+    "Zeladoria": 50,
+    "Eventos": 50
+  },
+  "first": {
+    "inserted": 100,
+    "ignored": 0
+  },
+  "repeat": {
+    "inserted": 0,
+    "ignored": 100
+  },
+  "unique_archive_operations": 100,
+  "seconds": {
+    "generation": 0.060472,
+    "extraction": 0.137942,
+    "first_save_and_archive_simulation": 0.004465,
+    "repeated_batch": 0.000539,
+    "total_including_export_check": 0.227356
+  }
+}
