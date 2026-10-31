@@ -186,9 +186,10 @@ class GoogleDrive:
         """Só leitura: permissões que não são de uma pessoa (anyone, domain, group, tipo
         desconhecido ou usuário sem e-mail) na entrada e na raiz (herdadas por tudo nela).
         Erro de leitura propaga: nunca se conclui isolamento sem ler as duas pastas."""
-        root = [self._entry(p, False) for p in self._permissions(self.root, self.PERM_FIELDS)]
+        raw_root = self._permissions(self.root, self.PERM_FIELDS)
+        root = [self._entry(p, False) for p in raw_root]
         found, seen = [], set()
-        for where, perms in (('raiz', root), ('entrada', self.entrada_permissions(root))):
+        for where, perms in (('raiz', root), ('entrada', self.entrada_permissions(raw_root))):
             for p in perms:
                 if p['type'] == 'user' and p['email']:
                     continue
@@ -196,8 +197,8 @@ class GoogleDrive:
                         'papel': self._safe(p['role']),
                         'alvo': self._safe(p['domain'] if p['type'] == 'domain' else p['email'])}
                 key = (item['tipo'], item['papel'], item['alvo'])
-                if where == 'entrada' and p['inherited'] and key in seen:
-                    continue  # Já listada na raiz, de onde vem.
+                if where == 'entrada' and key in seen:
+                    continue  # Já listada na raiz, que vale para toda a pasta.
                 seen.add(key)
                 found.append(item)
         return found

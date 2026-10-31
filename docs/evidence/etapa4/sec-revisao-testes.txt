@@ -1,0 +1,304 @@
+test_acl_changes_are_serialized (tests.test_acesso.AccessManagerTests.test_acl_changes_are_serialized) ... ok
+test_admin_add_success_and_idempotent (tests.test_acesso.AccessManagerTests.test_admin_add_success_and_idempotent) ... ok
+test_admin_protected_and_owner_refused (tests.test_acesso.AccessManagerTests.test_admin_protected_and_owner_refused) ... ok
+test_invalid_admin_in_constructor_refused (tests.test_acesso.AccessManagerTests.test_invalid_admin_in_constructor_refused) ... ok
+test_is_authorized_fails_closed (tests.test_acesso.AccessManagerTests.test_is_authorized_fails_closed) ... ok
+test_operator_cannot_call_admin_functions (tests.test_acesso.AccessManagerTests.test_operator_cannot_call_admin_functions) ... ok
+test_registry_failure_after_share_is_pending (tests.test_acesso.AccessManagerTests.test_registry_failure_after_share_is_pending) ... ok
+test_registry_remove_failure_changes_nothing (tests.test_acesso.AccessManagerTests.test_registry_remove_failure_changes_nothing) ... ok
+test_remove_blocks_app_first_then_revokes (tests.test_acesso.AccessManagerTests.test_remove_blocks_app_first_then_revokes) ... ok
+test_revoke_failure_blocks_app_and_leaves_pending (tests.test_acesso.AccessManagerTests.test_revoke_failure_blocks_app_and_leaves_pending) ... ok
+test_revoke_orphan_refuses_active_and_protected (tests.test_acesso.AccessManagerTests.test_revoke_orphan_refuses_active_and_protected) ... ok
+test_share_failure_authorizes_nothing (tests.test_acesso.AccessManagerTests.test_share_failure_authorizes_nothing) ... ok
+test_status_reports_folder_state_and_raises_on_drive_error (tests.test_acesso.AccessManagerTests.test_status_reports_folder_state_and_raises_on_drive_error) ... ok
+test_without_can_share_nothing_is_attempted (tests.test_acesso.AccessManagerTests.test_without_can_share_nothing_is_attempted) ... ok
+test_admin_config_is_normalized_and_invalid_fails_before_credentials (tests.test_acesso.RuntimeAccessTests.test_admin_config_is_normalized_and_invalid_fails_before_credentials) ... ok
+test_google_access_wiring (tests.test_acesso.RuntimeAccessTests.test_google_access_wiring) ... ok
+test_local_mode_has_no_access_manager (tests.test_acesso.RuntimeAccessTests.test_local_mode_has_no_access_manager) ... ok
+test_admin_check_uses_normalized_identity (tests.test_adm_adversarial.AddRemoveNormalizationTests.test_admin_check_uses_normalized_identity) ... ok
+test_admin_or_system_never_added_as_operator (tests.test_adm_adversarial.AddRemoveNormalizationTests.test_admin_or_system_never_added_as_operator) ... ok
+test_remove_and_orphan_refuse_privileged_accounts (tests.test_adm_adversarial.AddRemoveNormalizationTests.test_remove_and_orphan_refuse_privileged_accounts) ... ok
+test_remove_variant_spelling_blocks_same_user (tests.test_adm_adversarial.AddRemoveNormalizationTests.test_remove_variant_spelling_blocks_same_user) ... ok
+test_remove_with_registry_failure_touches_nothing (tests.test_adm_adversarial.AddRemoveNormalizationTests.test_remove_with_registry_failure_touches_nothing) ... ok
+test_can_share_false_or_inherited_never_writes (tests.test_adm_adversarial.GoogleDriveBoundaryTests.test_can_share_false_or_inherited_never_writes) ... ok
+test_drive_errors_never_authorize (tests.test_adm_adversarial.GoogleDriveBoundaryTests.test_drive_errors_never_authorize) ... ok
+test_full_cycle_writes_only_entrada_permissions (tests.test_adm_adversarial.GoogleDriveBoundaryTests.test_full_cycle_writes_only_entrada_permissions) ... ok
+test_share_applied_but_unconfirmed_is_not_reported_as_nothing_released (tests.test_adm_adversarial.GoogleDriveBoundaryTests.test_share_applied_but_unconfirmed_is_not_reported_as_nothing_released) ... ok
+test_share_ok_registry_fail_then_retry_reuses_permission (tests.test_adm_adversarial.GoogleDriveBoundaryTests.test_share_ok_registry_fail_then_retry_reuses_permission) ... ok
+test_case_and_whitespace_variants_are_one_identity (tests.test_adm_adversarial.RegistryTamperingTests.test_case_and_whitespace_variants_are_one_identity) ... ok
+test_header_and_admin_role_column_never_promote (tests.test_adm_adversarial.RegistryTamperingTests.test_header_and_admin_role_column_never_promote) ... ok
+test_interleaved_events_last_wins (tests.test_adm_adversarial.RegistryTamperingTests.test_interleaved_events_last_wins) ... ok
+test_is_authorized_never_raises (tests.test_adm_adversarial.RegistryTamperingTests.test_is_authorized_never_raises) ... ok
+test_late_add_after_reported_removal_does_not_reauthorize (tests.test_adm_adversarial.RegistryTamperingTests.test_late_add_after_reported_removal_does_not_reauthorize) ... ok
+test_odd_rows_fail_closed_for_registry_users_only (tests.test_adm_adversarial.RegistryTamperingTests.test_odd_rows_fail_closed_for_registry_users_only) ... ok
+test_unicode_lookalike_in_registry_does_not_match_real_login (tests.test_adm_adversarial.RegistryTamperingTests.test_unicode_lookalike_in_registry_does_not_match_real_login) ... ok
+test_account_switch_rechecks_and_drops_state (tests.test_adm_adversarial.SessionInterfaceTests.test_account_switch_rechecks_and_drops_state) ... 2026-10-31 12:53:21.755 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_expired_cache_drops_prepared_export (tests.test_adm_adversarial.SessionInterfaceTests.test_expired_cache_drops_prepared_export) ... 2026-10-31 12:53:22.608 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:22.687 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_operator_cannot_reach_adm_by_session_state (tests.test_adm_adversarial.SessionInterfaceTests.test_operator_cannot_reach_adm_by_session_state) ... 2026-10-31 12:53:22.735 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:22.765 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:22.765 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:22.765 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_revoked_user_cannot_download_prepared_excel_within_ttl (tests.test_adm_adversarial.SessionInterfaceTests.test_revoked_user_cannot_download_prepared_excel_within_ttl) ... 2026-10-31 12:53:22.812 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_switch_between_authorized_accounts_reads_registry (tests.test_adm_adversarial.SessionInterfaceTests.test_switch_between_authorized_accounts_reads_registry) ... 2026-10-31 12:53:22.929 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_google_config_errors_fail_before_credentials (tests.test_adm_adversarial.WiringTests.test_google_config_errors_fail_before_credentials) ... ok
+test_local_mode_has_no_access_and_ignores_admin_config (tests.test_adm_adversarial.WiringTests.test_local_mode_has_no_access_and_ignores_admin_config) ... ok
+test_manage_backup_works_with_access_wiring (tests.test_adm_adversarial.WiringTests.test_manage_backup_works_with_access_wiring) ... ok
+test_inherited_by_root_without_details (tests.test_drive_acl.DriveAclTests.test_inherited_by_root_without_details) ... ok
+test_owner_bot_and_invalid_email_refused (tests.test_drive_acl.DriveAclTests.test_owner_bot_and_invalid_email_refused) ... ok
+test_pagination (tests.test_drive_acl.DriveAclTests.test_pagination) ... ok
+test_revoke_absent (tests.test_drive_acl.DriveAclTests.test_revoke_absent) ... ok
+test_revoke_delete_error_propagates (tests.test_drive_acl.DriveAclTests.test_revoke_delete_error_propagates) ... ok
+test_revoke_inherited_remains_after_direct_deleted (tests.test_drive_acl.DriveAclTests.test_revoke_inherited_remains_after_direct_deleted) ... ok
+test_revoke_only_direct_of_email (tests.test_drive_acl.DriveAclTests.test_revoke_only_direct_of_email) ... ok
+test_share_creates_once_on_entrada (tests.test_drive_acl.DriveAclTests.test_share_creates_once_on_entrada) ... ok
+test_share_idempotent (tests.test_drive_acl.DriveAclTests.test_share_idempotent) ... ok
+test_share_not_confirmed (tests.test_drive_acl.DriveAclTests.test_share_not_confirmed) ... ok
+test_share_refused_without_can_share (tests.test_drive_acl.DriveAclTests.test_share_refused_without_can_share) ... ok
+test_sharing_and_permissions (tests.test_drive_acl.DriveAclTests.test_sharing_and_permissions) ... ok
+test_backup_has_logical_base_and_raw_journal (tests.test_etapa4.BackupTests.test_backup_has_logical_base_and_raw_journal) ... ok
+test_inconsistent_journal_still_saves_raw_copy (tests.test_etapa4.BackupTests.test_inconsistent_journal_still_saves_raw_copy) ... ok
+test_refuses_existing_destination (tests.test_etapa4.BackupTests.test_refuses_existing_destination) ... ok
+test_caption_per_environment (tests.test_etapa4.CaptionTests.test_caption_per_environment) ... 2026-10-31 12:53:23.271 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:23.321 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_unknown_environment_loads_nothing (tests.test_etapa4.CaptionTests.test_unknown_environment_loads_nothing) ... 2026-10-31 12:53:23.380 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_default_is_homologacao_and_unknown_refuses (tests.test_etapa4.EnvironmentTests.test_default_is_homologacao_and_unknown_refuses) ... ok
+test_production_refuses_homologation_resources_before_credentials (tests.test_etapa4.EnvironmentTests.test_production_refuses_homologation_resources_before_credentials) ... ok
+test_production_requires_google_mode (tests.test_etapa4.EnvironmentTests.test_production_requires_google_mode) ... ok
+test_root_alias (tests.test_etapa4.EnvironmentTests.test_root_alias) ... ok
+test_root_prefix_matrix (tests.test_etapa4.EnvironmentTests.test_root_prefix_matrix) ... ok
+test_big_history_imports_in_chunks_and_reads_back (tests.test_etapa4.HistoryTests.test_big_history_imports_in_chunks_and_reads_back) ... ok
+test_cell_over_limit_refused_before_credentials (tests.test_etapa4.HistoryTests.test_cell_over_limit_refused_before_credentials) ... ok
+test_chunked_import_refused_when_journal_has_records (tests.test_etapa4.HistoryTests.test_chunked_import_refused_when_journal_has_records) ... ok
+test_interrupted_chunked_import_is_retried_once (tests.test_etapa4.HistoryTests.test_interrupted_chunked_import_is_retried_once) ... ok
+test_metrics_are_aggregate_only (tests.test_etapa4.HistoryTests.test_metrics_are_aggregate_only) ... ok
+test_ambiguous_address_no_guess (tests.test_janus.ExtractionTests.test_ambiguous_address_no_guess) ... ok
+test_conflicting_protocol_blocks (tests.test_janus.ExtractionTests.test_conflicting_protocol_blocks) ... ok
+test_event_description_stops_at_form_labels (tests.test_janus.ExtractionTests.test_event_description_stops_at_form_labels) ... ok
+test_event_mapping (tests.test_janus.ExtractionTests.test_event_mapping) ... ok
+test_invalid_offset_components_leave_date_missing (tests.test_janus.ExtractionTests.test_invalid_offset_components_leave_date_missing) ... ok
+test_metadata_missing_malformed_and_naive (tests.test_janus.ExtractionTests.test_metadata_missing_malformed_and_naive) ... ok
+test_normalization (tests.test_janus.ExtractionTests.test_normalization) ... ok
+test_optional_missing (tests.test_janus.ExtractionTests.test_optional_missing) ... ok
+test_pdf_round_trip_both_layouts (tests.test_janus.ExtractionTests.test_pdf_round_trip_both_layouts) ... ok
+test_timezone_midnight_and_offsets (tests.test_janus.ExtractionTests.test_timezone_midnight_and_offsets) ... ok
+test_unknown_type_reported (tests.test_janus.ExtractionTests.test_unknown_type_reported) ... ok
+test_valid_offset_components_convert_to_sao_paulo (tests.test_janus.ExtractionTests.test_valid_offset_components_convert_to_sao_paulo) ... ok
+test_zeladoria_description_stops_at_form_labels (tests.test_janus.ExtractionTests.test_zeladoria_description_stops_at_form_labels) ... ok
+test_zeladoria_mapping (tests.test_janus.ExtractionTests.test_zeladoria_mapping) ... ok
+test_read_only_history_and_sequence (tests.test_janus.HistoryTests.test_read_only_history_and_sequence) ... ok
+test_wrong_headers_fail (tests.test_janus.HistoryTests.test_wrong_headers_fail) ... ok
+test_commit_before_archive_failure_restart (tests.test_janus.PersistenceTests.test_commit_before_archive_failure_restart) ... ok
+test_duplicate_same_batch_and_repeat (tests.test_janus.PersistenceTests.test_duplicate_same_batch_and_repeat) ... ok
+test_export_preserves_duplicates_and_literal_formula (tests.test_janus.PersistenceTests.test_export_preserves_duplicates_and_literal_formula) ... ok
+test_historical_duplicate_and_variants_preserved (tests.test_janus.PersistenceTests.test_historical_duplicate_and_variants_preserved) ... ok
+test_human_approval_required (tests.test_janus.PersistenceTests.test_human_approval_required) ... ok
+test_invalid_batch_entirely_blocked (tests.test_janus.PersistenceTests.test_invalid_batch_entirely_blocked) ... ok
+test_missing_optional_can_be_approved (tests.test_janus.PersistenceTests.test_missing_optional_can_be_approved) ... ok
+test_move_then_failure_retried_idempotently (tests.test_janus.PersistenceTests.test_move_then_failure_retried_idempotently) ... ok
+test_transaction_rollback_does_not_archive (tests.test_janus.PersistenceTests.test_transaction_rollback_does_not_archive) ... ok
+test_two_connections_no_overwrite (tests.test_janus.PersistenceTests.test_two_connections_no_overwrite) ... ok
+test_backup_loss_and_recovery_in_new_base (tests.test_recuperacao.RecoveryRehearsal.test_backup_loss_and_recovery_in_new_base) ... ok
+test_backup_refuses_overwrite_and_import_refuses_different_history (tests.test_recuperacao.RecoveryRehearsal.test_backup_refuses_overwrite_and_import_refuses_different_history) ... ok
+test_records_after_last_backup_are_recovered_by_reprocessing (tests.test_recuperacao.RecoveryRehearsal.test_records_after_last_backup_are_recovered_by_reprocessing) ... ok
+test_clean_acl_keeps_previous_caption (tests.test_sec_acl.BroadSharingInterfaceTests.test_clean_acl_keeps_previous_caption) ... 2026-10-31 12:53:27.760 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_stale_state_without_isolation_flag_is_not_ok (tests.test_sec_acl.BroadSharingInterfaceTests.test_stale_state_without_isolation_flag_is_not_ok) ... 2026-10-31 12:53:27.830 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:27.882 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_warning_lists_broad_shares_and_no_ok_message (tests.test_sec_acl.BroadSharingInterfaceTests.test_warning_lists_broad_shares_and_no_ok_message) ... 2026-10-31 12:53:27.954 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_acl_read_error_never_claims_isolation (tests.test_sec_acl.BroadSharingTests.test_acl_read_error_never_claims_isolation) ... ok
+test_anyone_on_root_inherited_everywhere (tests.test_sec_acl.BroadSharingTests.test_anyone_on_root_inherited_everywhere) ... ok
+test_anyone_reader_on_entrada (tests.test_sec_acl.BroadSharingTests.test_anyone_reader_on_entrada) ... ok
+test_clean_acl_is_isolated (tests.test_sec_acl.BroadSharingTests.test_clean_acl_is_isolated) ... ok
+test_domain_writer_on_entrada (tests.test_sec_acl.BroadSharingTests.test_domain_writer_on_entrada) ... ok
+test_group_on_entrada_is_broad_not_orphan (tests.test_sec_acl.BroadSharingTests.test_group_on_entrada_is_broad_not_orphan) ... ok
+test_revoke_never_touches_group_domain_or_anyone (tests.test_sec_acl.BroadSharingTests.test_revoke_never_touches_group_domain_or_anyone) ... ok
+test_unknown_type_and_user_without_email_are_not_isolated (tests.test_sec_acl.BroadSharingTests.test_unknown_type_and_user_without_email_are_not_isolated) ... ok
+test_unsafe_characters_never_reach_descriptor (tests.test_sec_acl.BroadSharingTests.test_unsafe_characters_never_reach_descriptor) ... ok
+test_authorized_user_still_downloads (tests.test_sec_download.BrowserRevocationTests.test_authorized_user_still_downloads) ... ok
+test_revoked_user_clicking_rendered_button_gets_nothing (tests.test_sec_download.BrowserRevocationTests.test_revoked_user_clicking_rendered_button_gets_nothing) ... ok
+test_authorized_click_downloads_excel (tests.test_sec_download.DeferredDownloadTests.test_authorized_click_downloads_excel) ... 2026-10-31 12:53:43.144 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_no_bytes_published_when_rendered (tests.test_sec_download.DeferredDownloadTests.test_no_bytes_published_when_rendered) ... 2026-10-31 12:53:43.232 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_revoked_after_render_gets_no_bytes (tests.test_sec_download.DeferredDownloadTests.test_revoked_after_render_gets_no_bytes) ... 2026-10-31 12:53:43.312 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_unreadable_registry_at_click_gets_no_bytes (tests.test_sec_download.DeferredDownloadTests.test_unreadable_registry_at_click_gets_no_bytes) ... 2026-10-31 12:53:43.446 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_admin_reuses_one_drive_for_workflow_and_adm (tests.test_sec_init.AppInitTests.test_admin_reuses_one_drive_for_workflow_and_adm) ... 2026-10-31 12:53:43.617 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_anonymous_constructs_nothing (tests.test_sec_init.AppInitTests.test_anonymous_constructs_nothing) ... 2026-10-31 12:53:43.651 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_authorized_user_gets_workflow (tests.test_sec_init.AppInitTests.test_authorized_user_gets_workflow) ... 2026-10-31 12:53:43.679 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_config_errors_fail_before_credentials (tests.test_sec_init.AppInitTests.test_config_errors_fail_before_credentials) ... 2026-10-31 12:53:43.741 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:43.777 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:43.820 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:43.852 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_unauthorized_user_touches_only_registry (tests.test_sec_init.AppInitTests.test_unauthorized_user_touches_only_registry) ... 2026-10-31 12:53:43.903 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:43.903 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:43.903 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:43.903 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:43.903 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:43.903 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_unreadable_registry_denies_without_drive (tests.test_sec_init.AppInitTests.test_unreadable_registry_denies_without_drive) ... 2026-10-31 12:53:43.944 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_access_components_drive_is_lazy (tests.test_sec_init.RuntimeInitTests.test_access_components_drive_is_lazy) ... ok
+test_config_errors_before_credentials (tests.test_sec_init.RuntimeInitTests.test_config_errors_before_credentials) ... ok
+test_invalid_drive_config_surfaces_on_first_drive_use (tests.test_sec_init.RuntimeInitTests.test_invalid_drive_config_surfaces_on_first_drive_use) ... ok
+test_local_mode_unchanged (tests.test_sec_init.RuntimeInitTests.test_local_mode_unchanged) ... ok
+test_manage_style_components_builds_everything (tests.test_sec_init.RuntimeInitTests.test_manage_style_components_builds_everything) ... ok
+test_broad_inherited_from_root_in_my_drive (tests.test_sec_revisao.AclAdversarialTests.test_broad_inherited_from_root_in_my_drive) ... ok
+test_broad_on_last_page_of_both_folders (tests.test_sec_revisao.AclAdversarialTests.test_broad_on_last_page_of_both_folders) ... ok
+test_group_inherited_from_root_listed_once (tests.test_sec_revisao.AclAdversarialTests.test_group_inherited_from_root_listed_once) ... ok
+test_group_with_operator_email_is_broad_not_direct (tests.test_sec_revisao.AclAdversarialTests.test_group_with_operator_email_is_broad_not_direct) ... ok
+test_read_errors_raise_never_isolated (tests.test_sec_revisao.AclAdversarialTests.test_read_errors_raise_never_isolated) ... ok
+test_remove_deletes_only_user_permission_when_broad_coexists (tests.test_sec_revisao.AclAdversarialTests.test_remove_deletes_only_user_permission_when_broad_coexists) ... ok
+test_revoke_orphan_never_deletes_non_user (tests.test_sec_revisao.AclAdversarialTests.test_revoke_orphan_never_deletes_non_user) ... ok
+test_revoke_orphan_on_group_does_not_claim_success (tests.test_sec_revisao.AclAdversarialTests.test_revoke_orphan_on_group_does_not_claim_success) ... ok
+test_user_without_email_and_odd_types (tests.test_sec_revisao.AclAdversarialTests.test_user_without_email_and_odd_types) ... ok
+test_broad_warning_survives_remove_action (tests.test_sec_revisao.AclInterfaceTests.test_broad_warning_survives_remove_action) ... 2026-10-31 12:53:44.040 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_error_state_shows_only_error (tests.test_sec_revisao.AclInterfaceTests.test_error_state_shows_only_error) ... 2026-10-31 12:53:44.127 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:44.157 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_inconsistent_or_missing_states_never_ok (tests.test_sec_revisao.AclInterfaceTests.test_inconsistent_or_missing_states_never_ok) ... 2026-10-31 12:53:44.209 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:44.240 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:44.277 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:44.305 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:44.332 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:44.368 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:44.398 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:44.432 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:44.460 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:44.490 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:44.519 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:44.569 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_no_share_permission_plus_broad_shows_both (tests.test_sec_revisao.AclInterfaceTests.test_no_share_permission_plus_broad_shows_both) ... 2026-10-31 12:53:44.634 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:44.684 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_no_media_file_exists_before_click (tests.test_sec_revisao.DownloadAdversarialTests.test_no_media_file_exists_before_click) ... 2026-10-31 12:53:44.753 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_registry_errors_at_click_deny (tests.test_sec_revisao.DownloadAdversarialTests.test_registry_errors_at_click_deny) ... 2026-10-31 12:53:44.852 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_two_sessions_each_closure_checks_its_own_user (tests.test_sec_revisao.DownloadAdversarialTests.test_two_sessions_each_closure_checks_its_own_user) ... 2026-10-31 12:53:44.955 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:45.025 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_lazy_drive_failure_is_not_cached (tests.test_sec_revisao.InitOrderAdversarialTests.test_lazy_drive_failure_is_not_cached) ... 2026-10-31 12:53:45.119 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:45.168 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_logged_in_without_email_reads_nothing (tests.test_sec_revisao.InitOrderAdversarialTests.test_logged_in_without_email_reads_nothing) ... 2026-10-31 12:53:45.216 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_manage_backup_still_works (tests.test_sec_revisao.InitOrderAdversarialTests.test_manage_backup_still_works) ... ok
+test_registry_unreadable_then_readable (tests.test_sec_revisao.InitOrderAdversarialTests.test_registry_unreadable_then_readable) ... 2026-10-31 12:53:45.277 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:45.309 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_sequence_of_users_in_one_process (tests.test_sec_revisao.InitOrderAdversarialTests.test_sequence_of_users_in_one_process) ... 2026-10-31 12:53:45.349 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:45.377 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:45.407 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_all_arrival_orders_of_three_delayed_batches_and_duplicate_deliveries (tests.test_sheets_poc.SheetsProofTests.test_all_arrival_orders_of_three_delayed_batches_and_duplicate_deliveries) ... ok
+test_approval_and_invalid_batch_do_not_append (tests.test_sheets_poc.SheetsProofTests.test_approval_and_invalid_batch_do_not_append) ... ok
+test_cold_restart_in_transit_then_later_batch_no_overwrite (tests.test_sheets_poc.SheetsProofTests.test_cold_restart_in_transit_then_later_batch_no_overwrite) ... ok
+test_delayed_overlapping_batch_does_not_hide_distinct_records (tests.test_sheets_poc.SheetsProofTests.test_delayed_overlapping_batch_does_not_hide_distinct_records) ... ok
+test_double_click_is_blocked (tests.test_sheets_poc.SheetsProofTests.test_double_click_is_blocked) ... ok
+test_existing_drive_recovers_moved_pdf_and_lost_ack (tests.test_sheets_poc.SheetsProofTests.test_existing_drive_recovers_moved_pdf_and_lost_ack) ... ok
+test_history_retry_deduplicates_import_but_preserves_original_duplicates (tests.test_sheets_poc.SheetsProofTests.test_history_retry_deduplicates_import_but_preserves_original_duplicates) ... ok
+test_identifiers_stable_under_restart_and_input_reordering (tests.test_sheets_poc.SheetsProofTests.test_identifiers_stable_under_restart_and_input_reordering) ... ok
+test_invalid_manifest_blocks_export_and_archiving (tests.test_sheets_poc.SheetsProofTests.test_invalid_manifest_blocks_export_and_archiving) ... ok
+test_large_cell_and_file_rebinding_are_rejected (tests.test_sheets_poc.SheetsProofTests.test_large_cell_and_file_rebinding_are_rejected) ... ok
+test_late_replay_never_undoes_archive_acknowledgement (tests.test_sheets_poc.SheetsProofTests.test_late_replay_never_undoes_archive_acknowledgement) ... ok
+test_lost_response_and_failed_read_then_cold_restart (tests.test_sheets_poc.SheetsProofTests.test_lost_response_and_failed_read_then_cold_restart) ... ok
+test_repeated_inflight_requests_add_physical_but_no_logical_duplicates (tests.test_sheets_poc.SheetsProofTests.test_repeated_inflight_requests_add_physical_but_no_logical_duplicates) ... ok
+test_reprocessing_normalized_protocol_and_intralot_duplicate (tests.test_sheets_poc.SheetsProofTests.test_reprocessing_normalized_protocol_and_intralot_duplicate) ... ok
+test_same_protocol_different_approved_content_first_confirmed_wins (tests.test_sheets_poc.SheetsProofTests.test_same_protocol_different_approved_content_first_confirmed_wins) ... ok
+test_stale_read_after_success_never_causes_duplicate_export (tests.test_sheets_poc.SheetsProofTests.test_stale_read_after_success_never_causes_duplicate_export) ... ok
+test_timeout_after_commit_reconciles_without_extra_append (tests.test_sheets_poc.SheetsProofTests.test_timeout_after_commit_reconciles_without_extra_append) ... ok
+test_timeout_before_commit_reprocesses_after_cold_restart (tests.test_sheets_poc.SheetsProofTests.test_timeout_before_commit_reprocesses_after_cold_restart) ... ok
+test_unconfirmed_write_never_archives (tests.test_sheets_poc.SheetsProofTests.test_unconfirmed_write_never_archives) ... ok
+test_http_errors_propagate (tests.test_sheets_workflow.GoogleSheetsContractTests.test_http_errors_propagate) ... ok
+test_only_get_and_append_raw_insert_rows_on_journal (tests.test_sheets_workflow.GoogleSheetsContractTests.test_only_get_and_append_raw_insert_rows_on_journal) ... ok
+test_archive_failure_survives_restart_and_resumes (tests.test_sheets_workflow.SheetsWorkflowTests.test_archive_failure_survives_restart_and_resumes) ... ok
+test_base_without_history_is_refused (tests.test_sheets_workflow.SheetsWorkflowTests.test_base_without_history_is_refused) ... ok
+test_changed_pdf_and_duplicate_created_by_edit_stay_in_entrada (tests.test_sheets_workflow.SheetsWorkflowTests.test_changed_pdf_and_duplicate_created_by_edit_stay_in_entrada) ... ok
+test_end_to_end_restart_history_and_export (tests.test_sheets_workflow.SheetsWorkflowTests.test_end_to_end_restart_history_and_export) ... ok
+test_lost_response_and_timeout_never_duplicate_or_archive_early (tests.test_sheets_workflow.SheetsWorkflowTests.test_lost_response_and_timeout_never_duplicate_or_archive_early) ... ok
+test_requires_approval_valid_fields_and_writes_nothing_partial (tests.test_sheets_workflow.SheetsWorkflowTests.test_requires_approval_valid_fields_and_writes_nothing_partial) ... ok
+test_admin_adds_and_removes (tests.test_ui.GoogleAccessInterfaceTests.test_admin_adds_and_removes) ... 2026-10-31 12:53:46.170 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_admin_partial_failures_show_pending (tests.test_ui.GoogleAccessInterfaceTests.test_admin_partial_failures_show_pending) ... 2026-10-31 12:53:46.337 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_admin_refusals_and_handlers_recheck (tests.test_ui.GoogleAccessInterfaceTests.test_admin_refusals_and_handlers_recheck) ... 2026-10-31 12:53:46.629 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:46.785 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_drive_status_error_is_plain (tests.test_ui.GoogleAccessInterfaceTests.test_drive_status_error_is_plain) ... 2026-10-31 12:53:46.846 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_operator_works_without_adm (tests.test_ui.GoogleAccessInterfaceTests.test_operator_works_without_adm) ... 2026-10-31 12:53:46.943 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_session_blocked_after_removal (tests.test_ui.GoogleAccessInterfaceTests.test_session_blocked_after_removal) ... 2026-10-31 12:53:47.296 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:47.453 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:47.513 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_unauthorized_or_unreadable_registry_loads_nothing (tests.test_ui.GoogleAccessInterfaceTests.test_unauthorized_or_unreadable_registry_loads_nothing) ... 2026-10-31 12:53:47.598 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:47.626 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:47.654 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_allowlist_only_in_google_mode (tests.test_ui.InterfaceTests.test_allowlist_only_in_google_mode) ... ok
+test_archive_failure_then_retry_button (tests.test_ui.InterfaceTests.test_archive_failure_then_retry_button) ... 2026-10-31 12:53:47.731 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_clicks_edit_approval_archive_and_export (tests.test_ui.InterfaceTests.test_clicks_edit_approval_archive_and_export) ... 2026-10-31 12:53:47.967 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:48.113 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_configuration_failure_is_plain_portuguese (tests.test_ui.InterfaceTests.test_configuration_failure_is_plain_portuguese) ... 2026-10-31 12:53:48.286 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_google_mode_without_login_configuration_loads_nothing (tests.test_ui.InterfaceTests.test_google_mode_without_login_configuration_loads_nothing) ... 2026-10-31 12:53:48.334 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_table_edits_do_not_read_sheets (tests.test_ui.InterfaceTests.test_table_edits_do_not_read_sheets) ... 2026-10-31 12:53:48.385 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-31 12:53:48.472 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_unconfirmed_write_is_retried_without_duplicates (tests.test_ui.InterfaceTests.test_unconfirmed_write_is_retried_without_duplicates) ... 2026-10-31 12:53:48.595 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_default_is_journal (tests.test_usuarios.GoogleSheetsRangeTests.test_default_is_journal) ... ok
+test_invalid_range (tests.test_usuarios.GoogleSheetsRangeTests.test_invalid_range) ... ok
+test_usuarios_range (tests.test_usuarios.GoogleSheetsRangeTests.test_usuarios_range) ... ok
+test_add_remove_readd_cycle (tests.test_usuarios.UsersRegistryTests.test_add_remove_readd_cycle) ... ok
+test_header_ignored_and_short_rows_padded (tests.test_usuarios.UsersRegistryTests.test_header_ignored_and_short_rows_padded) ... ok
+test_idempotent_add_and_remove (tests.test_usuarios.UsersRegistryTests.test_idempotent_add_and_remove) ... ok
+test_lost_response_after_append_is_confirmed (tests.test_usuarios.UsersRegistryTests.test_lost_response_after_append_is_confirmed) ... ok
+test_missing_tab_propagates (tests.test_usuarios.UsersRegistryTests.test_missing_tab_propagates) ... ok
+test_normalization_and_invalid_emails (tests.test_usuarios.UsersRegistryTests.test_normalization_and_invalid_emails) ... ok
+test_registry_never_writes_journal (tests.test_usuarios.UsersRegistryTests.test_registry_never_writes_journal) ... ok
+test_timeout_before_apply_is_unconfirmed (tests.test_usuarios.UsersRegistryTests.test_timeout_before_apply_is_unconfirmed) ... ok
+test_unconfirmed_when_read_back_misses (tests.test_usuarios.UsersRegistryTests.test_unconfirmed_when_read_back_misses) ... ok
+test_unknown_event_or_bad_row_fails_closed (tests.test_usuarios.UsersRegistryTests.test_unknown_event_or_bad_row_fails_closed) ... ok
+test_archive_verify_after_move_and_retry_target (tests.test_workflow.GoogleContractTests.test_archive_verify_after_move_and_retry_target) ... ok
+test_modified_content_permission_failure_and_wrong_root (tests.test_workflow.GoogleContractTests.test_modified_content_permission_failure_and_wrong_root) ... ok
+test_pages_and_parent_scoped_download (tests.test_workflow.GoogleContractTests.test_pages_and_parent_scoped_download) ... ok
+test_after_commit_failure_and_restart (tests.test_workflow.WorkflowTests.test_after_commit_failure_and_restart) ... ok
+test_approval_invalid_protocol_date_and_no_partial_write (tests.test_workflow.WorkflowTests.test_approval_invalid_protocol_date_and_no_partial_write) ... ok
+test_concurrent_previews_never_duplicate_or_archive_rejected_files (tests.test_workflow.WorkflowTests.test_concurrent_previews_never_duplicate_or_archive_rejected_files) ... ok
+test_duplicate_after_manual_edit_remains_input (tests.test_workflow.WorkflowTests.test_duplicate_after_manual_edit_remains_input) ... ok
+test_end_to_end_history_optional_edit_export_restart (tests.test_workflow.WorkflowTests.test_end_to_end_history_optional_edit_export_restart) ... ok
+test_history_date_duplicate_backup_restore_and_refusal_replace (tests.test_workflow.WorkflowTests.test_history_date_duplicate_backup_restore_and_refusal_replace) ... ok
+test_kernel_lock_between_independent_processes (tests.test_workflow.WorkflowTests.test_kernel_lock_between_independent_processes) ... ok
+test_modified_pdf_before_approval_or_after_commit_preserved (tests.test_workflow.WorkflowTests.test_modified_pdf_before_approval_or_after_commit_preserved) ... ok
+test_move_confirmation_lost_is_idempotent (tests.test_workflow.WorkflowTests.test_move_confirmation_lost_is_idempotent) ... ok
+test_one_archive_failure_does_not_stop_other_files (tests.test_workflow.WorkflowTests.test_one_archive_failure_does_not_stop_other_files) ... ok
+test_persistent_history_preserves_datetime_cells_and_rejects_replacement (tests.test_workflow.WorkflowTests.test_persistent_history_preserves_datetime_cells_and_rejects_replacement) ... ok
+
+----------------------------------------------------------------------
+Ran 216 tests in 28.344s
+
+OK

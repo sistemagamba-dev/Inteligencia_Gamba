@@ -115,7 +115,7 @@ class AclAdversarialTests(unittest.TestCase):
         self.assertFalse(status['isolamento_ok'])
         self.assertIn('raiz', [a['onde'] for a in status['amplos']])
 
-    @unittest.expectedFailure
+    # Corrigido na integração (antes expectedFailure).
     def test_group_inherited_from_root_listed_once(self):
         # DEFEITO (baixo, cosmético): broad_sharing passa a lista já normalizada (_entry, chave 'email')
         # para entrada_permissions, que procura 'emailAddress'; o conjunto on_root fica vazio e a
@@ -135,7 +135,7 @@ class AclAdversarialTests(unittest.TestCase):
                 pass  # Domínio/vazio: recusado como e-mail inválido.
         self.assertEqual(self.deletes(), [])
 
-    @unittest.expectedFailure
+    # Corrigido na integração (antes expectedFailure).
     def test_revoke_orphan_on_group_does_not_claim_success(self):
         # DEFEITO (baixo): revoke_orphan ignora o retorno de revoke_entrada (False = nada apagado) e
         # responde "Permissão na pasta revogada." enquanto a permissão do grupo continua. Pela UI o

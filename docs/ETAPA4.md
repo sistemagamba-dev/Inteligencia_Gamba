@@ -123,5 +123,6 @@ dependem de aprovação humana pontual.
 
 ## Testes
 
-116 testes OK: os 74 anteriores, 15 em `tests/test_etapa4.py`, 3 do ensaio de recuperação em `tests/test_recuperacao.py`,
-17 em `tests/test_acesso.py` e 7 de acesso na interface em `tests/test_ui.py` (somente fakes).
+216 testes OK (somente fakes e contas simuladas), inclusive 2 testes de navegador real (Playwright,
+pulados se o pacote não estiver instalado): ver `docs/evidence/etapa4/adm-testes.txt` e
+`docs/evidence/etapa4/sec-revisao-testes.txt`.

@@ -158,7 +158,9 @@ class AccessManager:
             if email in active:
                 raise Refused('Este e-mail tem acesso ao JANUS. Use “Remover”.')
             try:
-                self.drive.revoke_entrada(email)
+                revoked = self.drive.revoke_entrada(email)
             except Exception:
                 return result(False, 'Não foi possível revogar a permissão na pasta. Tente novamente.')
+            if not revoked:
+                return result(False, 'Nenhuma permissão direta deste e-mail foi encontrada; nada mudou. Confira no Google Drive.')
             return result(True, 'Permissão na pasta revogada.')
