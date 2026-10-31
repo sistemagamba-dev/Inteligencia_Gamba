@@ -1,0 +1,50 @@
+{
+  "backend": "Sheets simulado; values.append RAW INSERT_ROWS; sem Google real",
+  "base_commit": "15c3b49aac3dbee1bbdf7dee8fb77b1fe2270488",
+  "synthetic_history": {
+    "rows": 3160,
+    "unique_protocols": 3106,
+    "duplicate_excess": 54
+  },
+  "synthetic_pdfs": 100,
+  "pages": 300,
+  "logical_records_before_approval": 0,
+  "second_batch_confirmed_before_delayed_first": {
+    "batch_id": "f664a0c97d1366bb4c1f1818a472c6c9eed081a146e4517d1d9e109949cc57a0",
+    "inserted": 50,
+    "ignored": 0
+  },
+  "first_batch_after_delayed_double_delivery": {
+    "batch_id": "213ac18ff9552dbbe0d4c54e25ded852e47b987b709c17d3980503bdd7591942",
+    "inserted": 48,
+    "ignored": 2
+  },
+  "physical_new_record_events": 146,
+  "logical_new_records": 98,
+  "physical_repetitions_consolidated": 48,
+  "additional_logical_records_on_replay": 0,
+  "additional_appends_on_replay": 0,
+  "full_reprocessing": {
+    "batch_id": "ad18231a350076d9ba0a10dca72e15d92fcaedca74f19c2057619b98ad25af98",
+    "inserted": 0,
+    "ignored": 100
+  },
+  "archive": {
+    "archived": 98,
+    "failures": []
+  },
+  "preserved_pending_pdfs": 2,
+  "export_rows": 3258,
+  "historical_values_identical": true,
+  "confirmed_prefix_unchanged": true,
+  "append_calls": 5,
+  "applied_deliveries": 6,
+  "largest_serialized_append_bytes": 857474,
+  "seconds": {
+    "import_generate_extract": 0.301228,
+    "adversarial_approval_and_reconciliation": 0.09666,
+    "total_including_export_archive": 0.845159
+  },
+  "known_data_integrity_failures_in_executed_scenarios": 0,
+  "google_real_validated": false
+}

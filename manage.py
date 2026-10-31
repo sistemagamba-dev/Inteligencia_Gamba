@@ -48,11 +48,22 @@ def restore(database, backup):
 
 
 def demo(root):
+    root = Path(root)
+    if (root/'janus.sqlite').exists():
+        raise ValueError('Use uma pasta nova para a demonstração')
+    history = demo_files(root)
+    store = Store(root/'janus.sqlite')
+    store.import_history(history)
+    store.close()
+
+
+def demo_files(root):
+    """PDFs e histórico inventados; devolve o caminho do histórico sintético."""
     from drive_adapter import LocalDrive
     from tests.fixtures import pdf, text, PROTOCOL
     root = Path(root)
     drive = LocalDrive(root/'drive')
-    if (root/'janus.sqlite').exists() or any((drive.root/'entrada').iterdir()):
+    if any((drive.root/'entrada').iterdir()):
         raise ValueError('Use uma pasta nova para a demonstração')
     history = root/'historico-sintetico.xlsx'
     book = Workbook()
@@ -63,9 +74,6 @@ def demo(root):
         book.active.append([order, None, 'Pessoa histórica sintética', None, PROTOCOL, 'JANUS'])
     book.save(history)
     book.close()
-    store = Store(root/'janus.sqlite')
-    store.import_history(history)
-    store.close()
     for name, protocol, events, missing in [
         ('01-zeladoria', 'C000000000000000001', False, False),
         ('02-eventos', 'C000000000000000002', True, False),
@@ -76,12 +84,15 @@ def demo(root):
             content = content.replace('Enquadramento: Manutencao sintetica\n', '')
         pdf(drive.root/'entrada'/f'{name}.pdf', content, date=None if missing else 'D:20261028010000Z')
     (drive.root/'entrada'/'05-invalido.pdf').write_bytes(b'PDF sintetico invalido')
+    return history
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
     cmd = sub.add_parser('demo'); cmd.add_argument('root', type=Path)
+    cmd = sub.add_parser('import-history-sheets', help='Importa uma única vez o histórico no diário do Sheets')
+    cmd.add_argument('file', type=Path)
     for name in ('import-history', 'backup', 'restore'):
         cmd = sub.add_parser(name)
         cmd.add_argument('database', type=Path)
@@ -89,6 +100,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.command == 'demo':
         demo(args.root)
+    elif args.command == 'import-history-sheets':
+        from runtime import components
+        imported = components().proof.import_history(args.file.read_bytes())
+        print('Histórico importado.' if imported else 'Mesmo histórico já importado; nada alterado.')
     elif args.command == 'restore':
         restore(args.database, args.file)
     else:

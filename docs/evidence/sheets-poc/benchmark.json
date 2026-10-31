@@ -1,0 +1,33 @@
+{
+  "backend": "Google Sheets simulado em memória; Google real não chamado",
+  "base_commit": "e8e672b51d68d18b1156fa8d3a3639098ff41f9c",
+  "synthetic_history": {
+    "rows": 3160,
+    "unique_protocols": 3106,
+    "duplicate_excess": 54
+  },
+  "synthetic_pdfs": 100,
+  "pages": 300,
+  "records_before_approval": 0,
+  "first": {
+    "inserted": 98,
+    "ignored": 2
+  },
+  "additional_records_on_replay": 0,
+  "additional_commits_on_replay": 0,
+  "archive": {
+    "archived": 98,
+    "failures": []
+  },
+  "preserved_pending_pdfs": 2,
+  "export_rows": 3258,
+  "history_values_unchanged": true,
+  "batch_update_commits": 3,
+  "largest_serialized_request_bytes": 577355,
+  "seconds": {
+    "history_import_pdf_generation_extraction": 0.252592,
+    "approval_including_lost_response_recovery": 0.024202,
+    "total_including_export_archive": 0.607475
+  },
+  "known_failure": "cold restart during a request still in transit can overwrite a later batch; see negative control test"
+}
