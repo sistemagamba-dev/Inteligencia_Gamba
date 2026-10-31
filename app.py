@@ -23,9 +23,15 @@ PASTA = {'ok': 'compartilhada', 'ausente': 'sem acesso', 'herdada': 'acesso herd
 
 
 @st.cache_resource(show_spinner=False)
-def components():
+def access_components():
+    # Só credencial + cadastro: basta para autorizar; Drive e journal ficam para depois.
+    return runtime.access_components()
+
+
+@st.cache_resource(show_spinner=False)
+def components(_access=None):
     # Um fluxo por processo: o lock contra clique duplo é compartilhado entre as sessões.
-    return runtime.components()
+    return runtime.components(_access)
 
 
 def forget():
@@ -165,21 +171,26 @@ def main():
         else:
             st.error('O acesso ainda não foi configurado. Solicite à equipe técnica.')
         return
-    try:
-        flow = components()
-    except Exception:
-        st.error(('O sistema' if producao else 'O ambiente de teste') +
-                 ' está indisponível. Solicite à equipe técnica a revisão da configuração.')
-        return
+    unavailable = (('O sistema' if producao else 'O ambiente de teste') +
+                   ' está indisponível. Solicite à equipe técnica a revisão da configuração.')
     access, email = None, None
     if runtime.mode() == 'google':
-        # Autorização atual (configuração + cadastro); sem acesso, nenhum dado é lido.
-        access, email = getattr(flow, 'access', None), getattr(st.user, 'email', None)
+        # Autorização atual (configuração + cadastro) antes de qualquer recurso privado (Drive, journal).
+        try:
+            access, email = access_components(), getattr(st.user, 'email', None)
+        except Exception:
+            st.error(unavailable)
+            return
         if access is None or not authorized(access, email):
             forget()
             st.error('Acesso não autorizado. Entre com a conta indicada pela equipe técnica.')
             st.button('Sair', on_click=st.logout)
             return
+    try:
+        flow = components(access)
+    except Exception:
+        st.error(unavailable)
+        return
     drive = flow.drive
     if hasattr(drive, 'entrada'):
         st.link_button('Abrir pasta de entrada', 'https://drive.google.com/drive/folders/' + drive.entrada)
