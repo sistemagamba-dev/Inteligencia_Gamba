@@ -82,6 +82,7 @@ de 3.271 linhas, 54 duplicatas e 40 registros: base recuperada idêntica, 1 appe
   e-mail inválido recusa o início antes das credenciais), a lista fixa `JANUS_ALLOWED_EMAILS` (mantida
   por compatibilidade) ou quem está ativo na aba `usuarios` da planilha (`usuarios!A:F`; o `journal` não
   muda). O cadastro nunca concede papel de Adm. Falha de leitura nega o acesso.
+- **Antes de autorizar**: só credencial + leitura do cadastro (`runtime.access_components`); Drive e journal são construídos só depois da autorização (`tests/test_sec_init.py`).
 - **Sessão aberta**: a autorização fica em cache por até 30 s (edições da tabela não gastam cota);
   Processar, Aprovar, Tentar arquivar, Preparar Excel e toda ação do Adm conferem de novo na hora. Sem
   acesso, a sessão é limpa e aparece "Seu acesso foi removido.".

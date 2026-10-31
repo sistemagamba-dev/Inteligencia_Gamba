@@ -26,9 +26,12 @@ class InterfaceTests(unittest.TestCase):
         self.proof.import_history(history.read_bytes())
         self.drive = LocalDrive(root/'drive')
         self.flow = SheetsWorkflow(self.proof, self.drive)
-        patcher = patch.object(runtime, 'components', return_value=self.flow)
-        patcher.start()
-        self.addCleanup(patcher.stop)
+        # Modo google: o app autoriza com access_components() e só depois chama components().
+        for patcher in (patch.object(runtime, 'components', return_value=self.flow),
+                        patch.object(runtime, 'access_components',
+                                     side_effect=lambda: getattr(self.flow, 'access', None))):
+            patcher.start()
+            self.addCleanup(patcher.stop)
         self.addCleanup(self.tmp.cleanup)
         self.addCleanup(st.cache_resource.clear)
 

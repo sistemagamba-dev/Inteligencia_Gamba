@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import tempfile
+import threading
 
 from acesso import AccessManager, normalize_email
 from drive_adapter import LocalDrive, GoogleDrive
@@ -61,10 +62,27 @@ def admins():
         raise ValueError('JANUS_ADMIN_EMAILS contém e-mail inválido') from None
 
 
-def google_components(session, settings):
+def google_components(session, settings, drive=None):
     from sheets_adapter import GoogleSheets
-    return SheetsWorkflow(SheetsProof(GoogleSheets(session, settings['sheet'])),
-                          GoogleDrive(session, *settings['folders'], prefix=settings['prefix']))
+    drive = drive or GoogleDrive(session, *settings['folders'], prefix=settings['prefix'])
+    return SheetsWorkflow(SheetsProof(GoogleSheets(session, settings['sheet'])), drive)
+
+
+class LazyDrive:
+    """GoogleDrive construído no primeiro uso: metadados da raiz e subpastas só depois da autorização."""
+    def __init__(self, session, settings):
+        self.session, self.settings, self._drive, self._lock = session, settings, None, threading.Lock()
+
+    def get(self):
+        with self._lock:
+            if self._drive is None:  # Falha não fica em cache: próxima ação tenta de novo.
+                self._drive = GoogleDrive(self.session, *self.settings['folders'], prefix=self.settings['prefix'])
+            return self._drive
+
+    def __getattr__(self, name):
+        if name.startswith('_'):
+            raise AttributeError(name)
+        return getattr(self.get(), name)
 
 
 def google_access(session, settings, drive, service_email):
@@ -76,11 +94,36 @@ def google_access(session, settings, drive, service_email):
                          protected={service_email} if service_email else ())
 
 
-def components():
-    env = ambiente()
-    if mode() == 'local':
-        if env == 'producao':
-            raise ValueError('Produção exige JANUS_MODE=google')
+def _local():
+    """Ambiente sempre validado primeiro; produção nunca roda em modo local."""
+    if ambiente() == 'producao' and mode() == 'local':
+        raise ValueError('Produção exige JANUS_MODE=google')
+    return mode() == 'local'
+
+
+def access_components():
+    """Só o necessário para autorizar: configuração validada, credencial e cadastro (lido a cada consulta).
+
+    O Drive fica preguiçoso (primeira ação do Adm ou components); o journal não é tocado.
+    Modo local: None (demonstração sem login).
+    """
+    if _local():
+        return None
+    if mode() == 'google':
+        settings = google_settings()  # Antes de qualquer credencial.
+        # Conta de serviço provisionada como segredo; nunca inicia consentimento.
+        from google.oauth2 import service_account
+        from google.auth.transport.requests import AuthorizedSession
+        info = json.loads(os.environ['JANUS_GOOGLE_SA_JSON'])
+        session = AuthorizedSession(service_account.Credentials.from_service_account_info(info, scopes=SCOPES))
+        return google_access(session, settings, LazyDrive(session, settings), info.get('client_email', ''))
+    raise ValueError('Modo desconhecido')
+
+
+def components(access=None):
+    """Fluxo completo (Drive + journal). O app chama só após autorizar e passa o access já pronto;
+    manage.py chama sem argumento (ferramenta técnica, sem login)."""
+    if _local():
         # Demonstração: Sheets simulado em memória e PDFs inventados numa pasta nova.
         from manage import demo_files
         from experiments.sheets_poc.fake import SimulatedSheets
@@ -92,14 +135,10 @@ def components():
         flow.access = None  # Demonstração: sem login nem Adm.
         return flow
     if mode() == 'google':
-        settings = google_settings()
-        # Conta de serviço provisionada como segredo; nunca inicia consentimento.
-        from google.oauth2 import service_account
-        from google.auth.transport.requests import AuthorizedSession
-        info = json.loads(os.environ['JANUS_GOOGLE_SA_JSON'])
-        session = AuthorizedSession(service_account.Credentials.from_service_account_info(info, scopes=SCOPES))
-        flow = google_components(session, settings)
-        flow.access = google_access(session, settings, flow.drive, info.get('client_email', ''))
+        access = access or access_components()
+        lazy = access.drive  # Um só GoogleDrive para o fluxo e o Adm.
+        flow = google_components(lazy.session, lazy.settings, lazy.get())
+        flow.access = access
         return flow
     raise ValueError('Modo desconhecido')
 
