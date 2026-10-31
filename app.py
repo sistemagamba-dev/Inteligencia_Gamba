@@ -313,7 +313,16 @@ def main():
     if 'export' in st.session_state:
         if access is not None and not authorized(access, email, fresh=True):
             blocked()  # Excel já preparado não é entregue a quem perdeu o acesso.
-        st.download_button('Baixar Excel (.xlsx)', st.session_state.export,
+        data = st.session_state.export
+
+        def excel():
+            # Chamada pelo Streamlit no clique, com o cadastro relido agora: o botão já desenhado não
+            # entrega o Excel a quem foi removido depois. (Bytes diretos ficariam numa URL /media
+            # servida sem rerun nem conferência.)
+            if access is not None and not access.is_authorized(email):
+                raise PermissionError('Seu acesso foi removido.')
+            return data
+        st.download_button('Baixar Excel (.xlsx)', excel,
             file_name='JANUS.xlsx' if producao else 'JANUS-teste.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     if access is not None and access.is_admin(email):
         adm(access, email)

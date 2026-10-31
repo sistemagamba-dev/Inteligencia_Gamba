@@ -86,6 +86,7 @@ de 3.271 linhas, 54 duplicatas e 40 registros: base recuperada idêntica, 1 appe
 - **Sessão aberta**: a autorização fica em cache por até 30 s (edições da tabela não gastam cota);
   Processar, Aprovar, Tentar arquivar, Preparar Excel e toda ação do Adm conferem de novo na hora. Sem
   acesso, a sessão é limpa e aparece "Seu acesso foi removido.".
+- **Baixar Excel**: os bytes só saem no clique, após releitura do cadastro (`data` como função, Streamlit 1.56); quem foi removido com o botão já na tela não recebe o arquivo (`tests/test_sec_download.py`, inclusive no navegador).
 - **Adm** (expansor discreto, só para administradores; cada clique confere de novo): estado do
   compartilhamento da pasta `entrada`, adicionar e-mail, lista de assessores com Remover, pendências com
   Revogar. Mudanças de permissão em sequência (um lock por processo).
