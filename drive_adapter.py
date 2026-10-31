@@ -1,4 +1,4 @@
-"""Adaptadores de teste. Nunca excluem arquivos ou alteram permissões."""
+"""Adaptadores de Drive. Nunca excluem arquivos; permissões só na pasta de entrada."""
 from dataclasses import dataclass
 from pathlib import Path
 import re
@@ -53,6 +53,7 @@ class GoogleDrive:
     Isso é uma barreira contra enganos de configuração, não substitui permissões.
     """
     API = 'https://www.googleapis.com/drive/v3/files'
+    EMAIL = re.compile(r'[^@\s]+@[^@\s]+\.[^@\s]+')
     PREFIXES = {'JANUS_TESTE': 'Use uma raiz de teste dedicada',
                 'JANUS_PRODUCAO': 'Use a raiz de produção dedicada'}
 
@@ -129,3 +130,89 @@ class GoogleDrive:
             'fields': 'id,parents', 'supportsAllDrives': 'true'}, json={})
         if self._metadata(file_id).get('parents') != [self.processados]:
             raise ValueError('Arquivamento não confirmado')
+
+    # ACL: toda escrita de permissão vai para self.entrada; a raiz só é lida.
+    def _permissions(self, file_id, fields):
+        items, token = [], None
+        while True:
+            data = self._request('GET', f'/{file_id}/permissions', params={
+                'fields': f'nextPageToken,permissions({fields})', 'pageSize': 100,
+                'pageToken': token, 'supportsAllDrives': 'true'}).json()
+            items.extend(data.get('permissions', []))
+            token = data.get('nextPageToken')
+            if not token:
+                return items
+
+    def _email(self, email):
+        email = str(email or '').strip().lower()
+        if not self.EMAIL.fullmatch(email):
+            raise ValueError('E-mail inválido')
+        return email
+
+    def entrada_sharing(self):
+        caps = self._request('GET', '/' + self.entrada, params={
+            'fields': 'capabilities(canShare)', 'supportsAllDrives': 'true'}).json()
+        root = self._request('GET', '/' + self.root, params={
+            'fields': 'owners(emailAddress)', 'supportsAllDrives': 'true'}).json()
+        return {'can_share': (caps.get('capabilities') or {}).get('canShare') is True,
+                'owners': [o['emailAddress'].lower() for o in root.get('owners', [])
+                           if o.get('emailAddress')]}
+
+    def entrada_permissions(self):
+        on_root = {(p.get('emailAddress') or '').lower()
+                   for p in self._permissions(self.root, 'id,emailAddress')} - {''}
+        result = []
+        for p in self._permissions(self.entrada, 'id,emailAddress,role,type,permissionDetails'):
+            email = (p.get('emailAddress') or '').lower()
+            # Conservador: qualquer sinal de herança (detalhe ou presença na raiz) conta.
+            inherited = (any(d.get('inherited') for d in p.get('permissionDetails') or []) or
+                         email in on_root)
+            result.append({'id': p['id'], 'email': email, 'role': p.get('role'),
+                           'type': p.get('type'), 'inherited': inherited})
+        return result
+
+    def _guard(self, email):
+        email = self._email(email)
+        sharing = self.entrada_sharing()
+        if email in sharing['owners']:
+            raise ValueError('Conta proprietária não pode ser alterada')
+        return email, sharing
+
+    def _direct(self, email, perms):
+        return [p for p in perms if p['email'] == email and not p['inherited']
+                and p['role'] != 'owner']
+
+    def share_entrada(self, email):
+        email, sharing = self._guard(email)
+        if not sharing['can_share']:
+            raise ValueError('Conta técnica sem permissão para compartilhar a pasta de entrada')
+        perms = self.entrada_permissions()
+        if any(p['email'] == email and p['inherited'] for p in perms):
+            raise ValueError('Acesso herdado da raiz; revisar manualmente')
+        writer = lambda ps: [p for p in self._direct(email, ps)
+                             if p['role'] == 'writer' and p['type'] == 'user']
+        if found := writer(perms):
+            return found[0]['id']
+        created = self._request('POST', f'/{self.entrada}/permissions', params={
+            'sendNotificationEmail': 'true', 'fields': 'id', 'supportsAllDrives': 'true'},
+            json={'type': 'user', 'role': 'writer', 'emailAddress': email}).json()
+        found = writer(self.entrada_permissions())
+        if not found:
+            raise ValueError('Compartilhamento não confirmado')
+        ids = [p['id'] for p in found]
+        return created.get('id') if created.get('id') in ids else ids[0]
+
+    def revoke_entrada(self, email):
+        email, _ = self._guard(email)
+        targets = self._direct(email, self.entrada_permissions())
+        if any(not re.fullmatch(r'[A-Za-z0-9_-]+', p['id']) for p in targets):
+            raise ValueError('Permissão inválida')
+        for p in targets:
+            self._request('DELETE', f"/{self.entrada}/permissions/{p['id']}",
+                          params={'supportsAllDrives': 'true'})
+        after = [p for p in self.entrada_permissions() if p['email'] == email]
+        if self._direct(email, after):
+            raise ValueError('Revogação não confirmada')
+        if any(p['inherited'] for p in after):
+            raise ValueError('Acesso herdado da raiz; revisar manualmente')
+        return bool(targets)
