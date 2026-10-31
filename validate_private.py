@@ -5,6 +5,7 @@ Nunca imprime textos, nomes, caminhos de PDFs ou valores da planilha.
 """
 import argparse
 import json
+import re
 from pathlib import Path
 import tempfile
 from time import perf_counter
@@ -34,6 +35,8 @@ def run(root: Path) -> dict:
         assert record.protocol and normalize(record.protocol) in normalize(text)
         assert record.requester and record.requester in ' '.join(text.split())
         assert record.description and record.category and record.address and record.neighborhood
+        assert not re.search(r'Anexar|Características do evento|Protocolo:|Informações complementares', record.description), \
+            'OCORRÊNCIA com rótulo do formulário'
         assert not record.warnings, 'Extração com pendências: revisar localmente'
         assert ('Interessado' not in record.requester and 'E-mail' not in record.requester)
         assert record.created == creation_time(raw).date().isoformat()
