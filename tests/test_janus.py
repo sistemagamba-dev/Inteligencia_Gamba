@@ -59,6 +59,23 @@ class ExtractionTests(unittest.TestCase):
         r = parse_text(base.replace('Pedido sintetico para teste.', 'Primeira parte\n2 Protocolo: ' + PROTOCOL), None)
         self.assertEqual(r.description, 'Primeira parte')
 
+    def test_read_record_event_ending_only_in_page_footer(self):
+        # Layout de JANUS_TESTE_OCORRENCIA_EVENTOS.pdf (homologação): após a descrição, nenhum
+        # "Protocolo:" em início de linha, só o rodapé "3 Protocolo:". Antes: TypeError → falha de leitura.
+        from workflow import read_record
+        base = text(events=True).split('Informações\ncomplementares')[0].replace(
+            'Pedido sintetico para teste.', 'solicitação de autorização para evento-teste cultural na praça.')
+        content = base + 'Anexar imagens (opcional)\nCaracterísticas do evento\n80\n3 Protocolo: ' + PROTOCOL
+        with tempfile.TemporaryDirectory() as tmp:
+            pdf(Path(tmp)/'e.pdf', content, pages=1)
+            record = read_record((Path(tmp)/'e.pdf').read_bytes())
+            self.assertEqual(record.description, 'solicitação de autorização para evento-teste cultural na praça.')
+            self.assertEqual((record.protocol, record.warnings), (PROTOCOL, []))
+            # Validação rigorosa preservada: outra linha "Protocolo:" divergente continua recusada.
+            pdf(Path(tmp)/'c.pdf', content + '\nProtocolo: C000000000000000099', pages=1)
+            with self.assertRaisesRegex(ValueError, 'protocolo'):
+                read_record((Path(tmp)/'c.pdf').read_bytes())
+
     def test_pdf_round_trip_both_layouts(self):
         with tempfile.TemporaryDirectory() as tmp:
             for events in [False, True]:
