@@ -282,6 +282,8 @@ def main():
         except Exception:
             st.error('Não foi possível preparar o Excel. Tente novamente.')
     if 'export' in st.session_state:
+        if access is not None and not authorized(access, email, fresh=True):
+            blocked()  # Excel já preparado não é entregue a quem perdeu o acesso.
         st.download_button('Baixar Excel (.xlsx)', st.session_state.export,
             file_name='JANUS.xlsx' if producao else 'JANUS-teste.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     if access is not None and access.is_admin(email):

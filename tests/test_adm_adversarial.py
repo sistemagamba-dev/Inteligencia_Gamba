@@ -96,7 +96,7 @@ class RegistryTamperingTests(unittest.TestCase):
     # usuarios.UsersRegistry.remove() só grava DEL se o e-mail estiver ativo naquele
     # instante; o Adm vê "Acesso removido" e, quando o ADD atrasado chega, o último
     # evento volta a ser ADD: o removido recupera o JANUS sem nenhuma ação.
-    @unittest.expectedFailure
+    # Corrigido na integração (antes expectedFailure).
     def test_late_add_after_reported_removal_does_not_reauthorize(self):
         sheets, registry = registry_with([])
         log = []
@@ -227,7 +227,7 @@ class GoogleDriveBoundaryTests(unittest.TestCase):
     # encontra a permissão (Google devolve o endereço canônico da conta, ex. com
     # pontos no Gmail, ou a listagem falha após o POST). O Adm vê "Nada foi
     # liberado" enquanto a pessoa já é editora de entrada (aparece só como pendência).
-    @unittest.expectedFailure
+    # Corrigido na integração (antes expectedFailure).
     def test_share_applied_but_unconfirmed_is_not_reported_as_nothing_released(self):
         original = self.fake.__call__
 
@@ -307,7 +307,7 @@ class SessionInterfaceTests(unittest.TestCase):
     # Dentro da janela AUTH_TTL (30 s, app.py:20) um assessor já removido continua
     # baixando o Excel preparado (e vendo o lote/links), porque só os botões de ação
     # chamam guard(); o contrato exige autorização atual também para download.
-    @unittest.expectedFailure
+    # Corrigido na integração (antes expectedFailure).
     def test_revoked_user_cannot_download_prepared_excel_within_ttl(self):
         app = self.run_app(self.oper)
         self.button(app, 'Preparar Excel da base').click().run()

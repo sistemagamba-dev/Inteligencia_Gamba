@@ -95,6 +95,16 @@ de 3.271 linhas, 54 duplicatas e 40 registros: base recuperada idêntica, 1 appe
   informa "removido" com acesso restante. Administradores, proprietários da pasta, a conta de serviço e
   a lista fixa não podem ser alterados pelo Adm. Arquivos que o próprio assessor enviou podem continuar
   sendo dele no Drive: isso não é revogado aqui.
+- **Cadastro**: vale o evento mais recente pelo instante gravado; Remover sempre grava um DEL, então um
+  ADD que chegue atrasado não devolve o acesso. Linha estranha na aba `usuarios` bloqueia todos os
+  assessores (falha fechada; administradores continuam entrando). Excel já preparado só é entregue após
+  conferência atual.
+- **Pré-requisitos (gates humanos)**: o proprietário cria a aba `usuarios` vazia na planilha de produção;
+  mantém ligado “Editores podem alterar permissões e compartilhar” **somente** na pasta `entrada`
+  (desligado na raiz, `processados`, `falhas` e planilha), senão a conta técnica não consegue compartilhar
+  (o Adm mostra o aviso). Efeito colateral: assessores também podem recompartilhar a `entrada`; o Adm
+  lista essas permissões em Pendências para Revogar. Comportamento real da API (endereço canônico do
+  Gmail, atraso na listagem, herança no Meu Drive) só se confirma no teste real autorizado.
 
 ## Gates humanos (não executados aqui)
 

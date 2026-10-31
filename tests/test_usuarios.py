@@ -36,8 +36,10 @@ class UsersRegistryTests(unittest.TestCase):
         self.assertEqual(len(self.sheet.rows), 1)
         self.assertTrue(self.users.remove('a@exemplo.org', by=ADMIN))
         self.assertFalse(self.users.remove('a@exemplo.org', by=ADMIN))
+        self.assertFalse(self.users.remove('nunca@exemplo.org', by=ADMIN))  # Grava DEL de bloqueio.
+        self.assertEqual(len(self.sheet.rows), 3)
         self.assertFalse(self.users.remove('nunca@exemplo.org', by=ADMIN))
-        self.assertEqual(len(self.sheet.rows), 2)
+        self.assertEqual(len(self.sheet.rows), 3)
 
     def test_normalization_and_invalid_emails(self):
         self.assertEqual(normalize_email('  Fulano.Silva@Exemplo.ORG.br '), 'fulano.silva@exemplo.org.br')
@@ -84,10 +86,10 @@ class UsersRegistryTests(unittest.TestCase):
         self.assertEqual(self.users.state()['ativos']['a@exemplo.org']['permissao'], '')
 
     def test_unknown_event_or_bad_row_fails_closed(self):
-        for rows in ([['XYZ', 'a@exemplo.org', ADMIN, 't', '', '']],
-                     [['ADD', 'a@exemplo.org', ADMIN, 't', '', ''], ['evento', 'x', '', '', '', '']],
-                     [['ADD', 'invalido', ADMIN, 't', '', '']],
-                     [['ADD', 'a@exemplo.org', ADMIN, 't', '', '', 'extra']]):
+        for rows in ([['XYZ', 'a@exemplo.org', ADMIN, '2026-01-01T00:00:00+00:00', '', '']],
+                     [['ADD', 'a@exemplo.org', ADMIN, '2026-01-01T00:00:00+00:00', '', ''], ['evento', 'x', '', '', '', '']],
+                     [['ADD', 'invalido', ADMIN, '2026-01-01T00:00:00+00:00', '', '']],
+                     [['ADD', 'a@exemplo.org', ADMIN, '2026-01-01T00:00:00+00:00', '', '', 'extra']]):
             self.sheet.rows = rows
             with self.subTest(rows=rows), self.assertRaises(ValueError):
                 self.users.active()
@@ -113,7 +115,7 @@ class UsersRegistryTests(unittest.TestCase):
         self.users.add('a@exemplo.org', by=ADMIN)
         self.assertEqual(journal.rows, [])
         transport = Mock()
-        transport.get.side_effect = [{'values':[]}, {'values':[['ADD', 'a@exemplo.org', ADMIN, 't']]}]
+        transport.get.side_effect = [{'values':[]}, {'values':[['ADD', 'a@exemplo.org', ADMIN, '2026-01-01T00:00:00+00:00']]}]
         UsersRegistry(transport).add('a@exemplo.org', by=ADMIN)
         self.assertEqual(transport.append.call_args.kwargs,
                          {'range':'usuarios!A:F', 'valueInputOption':'RAW', 'insertDataOption':'INSERT_ROWS'})
@@ -137,7 +139,7 @@ class GoogleSheetsRangeTests(unittest.TestCase):
         sheets = GoogleSheets(session, 'abc', 'usuarios!A:F')
         sheets.get()
         session.get.assert_called_once_with(self.BASE + 'usuarios!A:F', timeout=60)
-        body = {'values':[['ADD', 'a@exemplo.org', ADMIN, 't', '', '']]}
+        body = {'values':[['ADD', 'a@exemplo.org', ADMIN, '2026-01-01T00:00:00+00:00', '', '']]}
         sheets.append(body, range='usuarios!A:F', valueInputOption='RAW', insertDataOption='INSERT_ROWS')
         session.post.assert_called_once_with(self.BASE + 'usuarios!A:F:append', timeout=60, json=body,
                                              params={'valueInputOption':'RAW', 'insertDataOption':'INSERT_ROWS'})

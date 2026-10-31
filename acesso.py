@@ -13,6 +13,10 @@ SHARE_FAILED = 'Não foi possível compartilhar a pasta de entrada. Nada foi lib
 NO_SHARE = 'A conta técnica não tem permissão para compartilhar a pasta de entrada. Nada foi liberado.'
 NOT_REGISTERED = ('Pasta compartilhada, mas o acesso ao JANUS não foi registrado. '
                   'Tente adicionar novamente ou remova.')
+UNCERTAIN = ('Não foi possível confirmar o compartilhamento da pasta. O acesso ao JANUS não foi liberado; '
+             'confira as Pendências e use “Revogar” se o e-mail aparecer lá.')
+# Recusas do Drive anteriores a qualquer escrita: nesses casos nada foi compartilhado.
+BEFORE_WRITE = ('E-mail inválido', 'Conta proprietária', 'Conta técnica sem permissão', 'Acesso herdado')
 ADDED = 'Acesso liberado ao JANUS e à pasta de entrada.'
 NOT_BLOCKED = 'Não foi possível bloquear; nada mudou. Tente novamente.'
 NOT_REVOKED = ('Acesso ao JANUS bloqueado, mas a permissão na pasta continua. '
@@ -93,8 +97,10 @@ class AccessManager:
                 return result(False, False, NO_SHARE)
             try:
                 permission = self.drive.share_entrada(email)
-            except Exception:
-                return result(False, False, SHARE_FAILED)
+            except Exception as exc:
+                # Depois de tentar a escrita, a permissão pode existir sem confirmação.
+                before = isinstance(exc, ValueError) and str(exc).startswith(BEFORE_WRITE)
+                return result(False, False, SHARE_FAILED if before else UNCERTAIN)
             try:
                 self.registry.add(email, by=admin, permission_id=permission or '')
             except Exception:

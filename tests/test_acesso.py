@@ -99,7 +99,8 @@ class AccessManagerTests(unittest.TestCase):
                 self.drive.fail = {fail}
                 result = self.access.add(ADMIN, OPER)
                 self.assertEqual((result['app'], result['pasta']), (False, False))
-                self.assertIn('Nada foi liberado', result['mensagem'])
+                # Falha antes da escrita: nada liberado; depois da tentativa: estado incerto, aponta Pendências.
+                self.assertIn('Nada foi liberado' if fail == 'sharing' else 'confira as Pendências', result['mensagem'])
                 self.assertFalse(self.access.is_authorized(OPER))
                 self.assertNotIn('registry.add', [e[0] for e in self.log])
 

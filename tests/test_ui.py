@@ -231,7 +231,7 @@ class GoogleAccessInterfaceTests(unittest.TestCase):
         app = self.run_app(self.admin)
         self.acl.fail = {'share'}
         app = self.adm_add(app, 'falha@example.org')
-        self.assertIn('Nada foi liberado', app.warning[0].value)
+        self.assertIn('não foi liberado', app.warning[0].value)
         self.assertFalse(self.flow.access.is_authorized('falha@example.org'))
         self.acl.fail, self.registry.fail = set(), {'add'}
         app = self.adm_add(app, 'falha@example.org')
