@@ -89,7 +89,7 @@ class DriveAclTests(unittest.TestCase):
         self.assertEqual(d.entrada_sharing(), {'can_share': True, 'owners': [OWNER]})
         perms = {p['id']: p for p in d.entrada_permissions()}
         self.assertEqual(perms['d1'], {'id': 'd1', 'email': 'op@gmail.com', 'role': 'writer',
-                                       'type': 'user', 'inherited': False})
+                                       'type': 'user', 'inherited': False, 'domain': '', 'discovery': False})
         self.assertTrue(perms['o1']['inherited']); self.assertEqual(perms['a1']['email'], '')
 
     def test_inherited_by_root_without_details(self):

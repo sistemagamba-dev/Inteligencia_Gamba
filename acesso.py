@@ -128,6 +128,10 @@ class AccessManager:
         self._admin(admin)
         sharing = self.drive.entrada_sharing()
         permissions = self.drive.entrada_permissions()
+        # Compartilhamento amplo (link, domínio, grupo, tipo desconhecido) na entrada ou na raiz:
+        # só é mostrado, nunca revogado aqui (não foi o JANUS que criou; exige revisão humana).
+        broad = list(self.drive.broad_sharing())
+        permissions = [p for p in permissions if p.get('type') == 'user']
         active = sorted({_plain(e) for e in self.registry.active()})
         direct, inherited = set(), set()
         for p in permissions:
@@ -137,7 +141,8 @@ class AccessManager:
         skip = set(active) | self.protected | self._owners(sharing) | self.admins | self.allowed | {''}
         orphans = sorted({_plain(p.get('email')) for p in permissions
                           if not p.get('inherited') and p.get('role') != 'owner'} - skip)
-        return {'compartilhamento': bool(sharing.get('can_share')), 'usuarios': users, 'pendencias': orphans}
+        return {'compartilhamento': bool(sharing.get('can_share')), 'usuarios': users, 'pendencias': orphans,
+                'amplos': broad, 'isolamento_ok': not broad}
 
     def revoke_orphan(self, admin, email):
         self._admin(admin)

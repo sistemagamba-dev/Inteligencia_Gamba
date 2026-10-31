@@ -158,18 +158,49 @@ class GoogleDrive:
                 'owners': [o['emailAddress'].lower() for o in root.get('owners', [])
                            if o.get('emailAddress')]}
 
-    def entrada_permissions(self):
-        on_root = {(p.get('emailAddress') or '').lower()
-                   for p in self._permissions(self.root, 'id,emailAddress')} - {''}
+    PERM_FIELDS = 'id,emailAddress,role,type,domain,allowFileDiscovery,permissionDetails'
+
+    def _entry(self, p, inherited):
+        return {'id': p['id'], 'email': (p.get('emailAddress') or '').lower(), 'role': p.get('role'),
+                'type': p.get('type'), 'inherited': inherited,
+                'domain': (p.get('domain') or '').lower(), 'discovery': p.get('allowFileDiscovery') is True}
+
+    def entrada_permissions(self, root=None):
+        if root is None:
+            root = self._permissions(self.root, 'id,emailAddress')
+        on_root = {(p.get('emailAddress') or '').lower() for p in root} - {''}
         result = []
-        for p in self._permissions(self.entrada, 'id,emailAddress,role,type,permissionDetails'):
+        for p in self._permissions(self.entrada, self.PERM_FIELDS):
             email = (p.get('emailAddress') or '').lower()
             # Conservador: qualquer sinal de herança (detalhe ou presença na raiz) conta.
             inherited = (any(d.get('inherited') for d in p.get('permissionDetails') or []) or
                          email in on_root)
-            result.append({'id': p['id'], 'email': email, 'role': p.get('role'),
-                           'type': p.get('type'), 'inherited': inherited})
+            result.append(self._entry(p, inherited))
         return result
+
+    @staticmethod
+    def _safe(value):
+        return re.sub(r'[^a-z0-9@._-]', '', str(value or '').lower())[:254]
+
+    def broad_sharing(self):
+        """Só leitura: permissões que não são de uma pessoa (anyone, domain, group, tipo
+        desconhecido ou usuário sem e-mail) na entrada e na raiz (herdadas por tudo nela).
+        Erro de leitura propaga: nunca se conclui isolamento sem ler as duas pastas."""
+        root = [self._entry(p, False) for p in self._permissions(self.root, self.PERM_FIELDS)]
+        found, seen = [], set()
+        for where, perms in (('raiz', root), ('entrada', self.entrada_permissions(root))):
+            for p in perms:
+                if p['type'] == 'user' and p['email']:
+                    continue
+                item = {'onde': where, 'tipo': self._safe(p['type']) or 'desconhecido',
+                        'papel': self._safe(p['role']),
+                        'alvo': self._safe(p['domain'] if p['type'] == 'domain' else p['email'])}
+                key = (item['tipo'], item['papel'], item['alvo'])
+                if where == 'entrada' and p['inherited'] and key in seen:
+                    continue  # Já listada na raiz, de onde vem.
+                seen.add(key)
+                found.append(item)
+        return found
 
     def _guard(self, email):
         email = self._email(email)
@@ -179,8 +210,9 @@ class GoogleDrive:
         return email, sharing
 
     def _direct(self, email, perms):
-        return [p for p in perms if p['email'] == email and not p['inherited']
-                and p['role'] != 'owner']
+        # Só permissão de pessoa: grupo/domínio/anyone nunca são alterados pelo JANUS.
+        return [p for p in perms if p['email'] == email and p['type'] == 'user'
+                and not p['inherited'] and p['role'] != 'owner']
 
     def share_entrada(self, email):
         email, sharing = self._guard(email)

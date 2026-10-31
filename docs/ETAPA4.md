@@ -88,6 +88,13 @@ de 3.271 linhas, 54 duplicatas e 40 registros: base recuperada idêntica, 1 appe
 - **Adm** (expansor discreto, só para administradores; cada clique confere de novo): estado do
   compartilhamento da pasta `entrada`, adicionar e-mail, lista de assessores com Remover, pendências com
   Revogar. Mudanças de permissão em sequência (um lock por processo).
+- **Compartilhamento amplo** (só leitura, `GoogleDrive.broad_sharing`): permissões da `entrada` e da raiz
+  (herdadas por `processados`, `falhas` e tudo nela) que não são de uma pessoa — `type` `anyone` (link),
+  `domain`, `group`, tipo desconhecido ou usuário sem e-mail — aparecem no Adm em aviso vermelho
+  ("Compartilhamento amplo na pasta …: qualquer pessoa com o link / domínio X / grupo Y — revise no Google
+  Drive"). Enquanto houver alguma (ou o estado não for confirmado), o Adm não mostra "compartilhamento
+  disponível"; erro de leitura mostra só o erro. Não há revogação automática delas (não foram criadas
+  pelo JANUS: gate humano); Revogar/Remover só apagam permissão direta de `type=user`.
 - **Adicionar**: compartilha só a `entrada` (Editor) e depois registra no cadastro. Se compartilhar
   falhar, nada é liberado; se o registro falhar, a pasta fica compartilhada e aparece como pendência.
 - **Remover**: bloqueia primeiro no cadastro e depois revoga a permissão direta na `entrada`. Se a

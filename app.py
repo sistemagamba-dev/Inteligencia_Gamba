@@ -86,6 +86,17 @@ def adm_action(access, email, call):
 
 def adm(access, email):
     """Só para administradores da configuração; cada ação confere de novo."""
+    pastas = {'entrada': 'de entrada', 'raiz': 'raiz (vale para processados, falhas e tudo que estiver nela)'}
+    papeis = {'reader': 'leitor', 'commenter': 'comentarista', 'writer': 'editor',
+              'fileorganizer': 'organizador', 'organizer': 'administrador', 'owner': 'proprietário'}
+
+    def amplo(item):
+        tipo, alvo = item.get('tipo'), item.get('alvo') or '?'
+        quem = {'anyone': 'qualquer pessoa com o link', 'domain': f'domínio {alvo}',
+                'group': f'grupo {alvo}'}.get(tipo, f'permissão do tipo {tipo} ({alvo})')
+        return (f"Compartilhamento amplo na pasta {pastas.get(item.get('onde'), 'desconhecida')}: {quem} "
+                f"({papeis.get(item.get('papel'), item.get('papel') or '?')}) — revise no Google Drive.")
+
     with st.expander('Adm'):
         if 'adm' not in st.session_state:
             load_status(access, email)
@@ -99,9 +110,16 @@ def adm(access, email):
         if status.get('erro'):
             st.error('Não foi possível consultar o cadastro ou a pasta agora. Tente novamente.')
         else:
-            if status['compartilhamento']:
+            broad = status.get('amplos')
+            isolated = status.get('isolamento_ok') is True and broad == []
+            if not isolated:
+                # Nunca há botão aqui: compartilhamento amplo não é do JANUS e exige revisão humana.
+                lines = [amplo(b) for b in broad or ()]
+                st.error('\n\n'.join(lines) or 'Não foi possível confirmar que a pasta de entrada e a raiz '
+                         'não têm compartilhamento amplo. Use “Atualizar lista” ou revise no Google Drive.')
+            if status['compartilhamento'] and isolated:
                 st.caption('Pasta de entrada: compartilhamento disponível.')
-            else:
+            elif not status['compartilhamento']:
                 st.warning('A conta técnica não tem permissão para compartilhar a pasta de entrada. '
                            'Avise a equipe técnica.')
             st.markdown('**Assessores com acesso**')

@@ -48,6 +48,7 @@ class FakeAcl:
         self.log, self.owners, self.can_share, self.fail = log, list(owners), can_share, set()
         self.perms = {o: {'id': 'p-' + o, 'email': o, 'role': 'owner', 'type': 'user', 'inherited': True}
                       for o in owners}
+        self.broad = []  # Descritores de GoogleDrive.broad_sharing (anyone/domain/group na entrada ou raiz).
 
     def entrada_sharing(self):
         if 'sharing' in self.fail:
@@ -58,6 +59,11 @@ class FakeAcl:
         if 'list' in self.fail:
             raise ConnectionError('Drive indisponível')
         return [dict(p) for p in self.perms.values()]
+
+    def broad_sharing(self):
+        if 'list' in self.fail:
+            raise ConnectionError('Drive indisponível')
+        return [dict(b) for b in self.broad]
 
     def share_entrada(self, email):
         self.log.append(('drive.share', email))
@@ -90,7 +96,7 @@ class AccessManagerTests(unittest.TestCase):
         self.assertEqual(self.log, [('drive.share', OPER), ('registry.add', OPER, ADMIN, 'p-' + OPER)])
         self.assertTrue(self.access.add(ADMIN, OPER)['app'])
         status = self.access.status(ADMIN)
-        self.assertEqual(status, {'compartilhamento': True, 'pendencias': [],
+        self.assertEqual(status, {'compartilhamento': True, 'pendencias': [], 'amplos': [], 'isolamento_ok': True,
                                   'usuarios': [{'email': OPER, 'app': True, 'pasta': 'ok'}]})
 
     def test_share_failure_authorizes_nothing(self):
