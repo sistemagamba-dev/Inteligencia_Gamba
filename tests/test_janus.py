@@ -33,6 +33,32 @@ class ExtractionTests(unittest.TestCase):
         self.assertEqual(r.description, 'Pedido sintetico para teste.')
         self.assertEqual(r.warnings, [])
 
+    def test_zeladoria_description_stops_at_form_labels(self):
+        # Estrutura dos PDFs reais de referência, com conteúdo inventado.
+        tail = 'Anexar imagens\nProtocolo: {p}\nAnexar documento:\n2 Protocolo: {p}\n'.format(p=PROTOCOL)
+        base = text().split('Solicitação\n')[0]
+        r = parse_text(base + tail, None)
+        self.assertEqual(r.description, 'Pedido sintetico para teste.')
+        legit = base.replace('Pedido sintetico para teste.',
+                             'Buraco grande; anexar imagens depois\nsolicitação urgente do morador')
+        r = parse_text(legit + tail, None)
+        self.assertEqual(r.description, 'Buraco grande; anexar imagens depois solicitação urgente do morador')
+
+    def test_event_description_stops_at_form_labels(self):
+        base = text(events=True).split('Informações\ncomplementares')[0]
+        tail = ('Anexar imagens (opcional)\nAnexar documentos complementares\nCaracterísticas do evento\n'
+                'Número estimado de participantes\n20\n3 Protocolo: ' + PROTOCOL + '\nTERMO DE RESPONSABILIDADE\n')
+        r = parse_text(base + tail, None)
+        self.assertEqual(r.description, 'Pedido sintetico para teste.')
+        legit = base.replace('Pedido sintetico para teste.',
+                             'Uso do parque para evento\nsolicitação de apoio com Características do evento\nno local')
+        r = parse_text(legit + tail, None)
+        self.assertEqual(r.description,
+                         'Uso do parque para evento solicitação de apoio com Características do evento no local')
+        # Quebra de página dentro do pedido termina no rodapé, como antes.
+        r = parse_text(base.replace('Pedido sintetico para teste.', 'Primeira parte\n2 Protocolo: ' + PROTOCOL), None)
+        self.assertEqual(r.description, 'Primeira parte')
+
     def test_pdf_round_trip_both_layouts(self):
         with tempfile.TemporaryDirectory() as tmp:
             for events in [False, True]:

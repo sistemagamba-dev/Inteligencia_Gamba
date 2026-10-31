@@ -73,6 +73,12 @@ class Record:
                 self.description or None, self.neighborhood or None]
 
 
+# Rótulos do formulário que encerram a descrição: início de linha, grafia exata, inclusive
+# rodapé de página "N Protocolo:". Texto do pedido no meio da linha não é cortado.
+DESCRIPTION_END = (r'(?:\n[ \t]*(?-i:Anexar\s+(?:imagens|documento)|Informações\s+complementares|'
+                   r'Características\s+do\s+evento|Solicitação[ \t]*(?:\n|\Z)|(?:\d+\s+)?Protocolo:)|\Z)')
+
+
 def parse_text(text: str, raw_date: str | None) -> Record:
     keys = {normalize(v) for v in re.findall(r'^Protocolo:\s*([^\n]+)', text, re.M | re.I)}
     # Mantém rodapés como delimitadores para não incorporar anexos ao pedido.
@@ -88,13 +94,11 @@ def parse_text(text: str, raw_date: str | None) -> Record:
     if 'Zeladoria' in r.kind:
         r.category = capture(text, r'Enquadramento:', r'\nLocal:')
         r.full_address = capture(text, r'Endereço:', r'\nDescrição sintética')
-        r.description = capture(text, r'Descrição sintética do\s+pedido:',
-                                r'(?:\nSolicitação|\nProtocolo:|\Z)')
+        r.description = capture(text, r'Descrição sintética do\s+pedido:', DESCRIPTION_END)
     elif 'Eventos' in r.kind:
         r.category = capture(text, r'\nEnquadramento\s*\nEnquadramento\s+', r'\n')
         r.full_address = capture(text, r'Endereço do evento\s+', r'\nHorário de início')
-        r.description = capture(text, r'Descrição objetiva do\s+pedido\s*\n',
-                                r'\n(?:Informações\s+complementares|Solicitação|Protocolo:)|\Z')
+        r.description = capture(text, r'Descrição objetiva do\s+pedido\s*\n', DESCRIPTION_END)
     else:
         r.warnings.append('tipo_nao_suportado_revisar')
     parts = [compact(p) for p in r.full_address.split(',') if compact(p)]
