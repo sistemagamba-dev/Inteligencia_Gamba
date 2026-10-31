@@ -110,7 +110,8 @@ def fake_flow():
     return flow
 
 
-runtime.components = fake_flow
+runtime.access_components = lambda: fake_flow().access  # Autorização antes do fluxo (ordem atual do app).
+runtime.components = lambda access=None: fake_flow()
 st.user = SimpleNamespace(is_logged_in=True, email='assessor@example.org')
 app.main()
 '''
