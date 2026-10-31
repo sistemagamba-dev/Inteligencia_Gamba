@@ -33,6 +33,36 @@ def fingerprint(value):
     return hashlib.sha256(dumps(value).encode()).hexdigest()
 
 
+MAX_BYTES, MAX_CELL = 2_000_000, 50000
+
+
+def measure(rows):
+    """Bytes JSON do corpo do append e maior célula, sem expor valores."""
+    return (len(json.dumps({'values':rows}, ensure_ascii=False).encode()),
+            max((len(str(v)) for row in rows for v in row), default=0))
+
+
+def history_plan(source, limit=MAX_BYTES):
+    """Linhas H + manifesto I de import_history e os appends necessários.
+
+    Cabendo no limite, um único append (H... + I). Senão, H em partes consecutivas
+    abaixo do limite e o manifesto I sozinho por último; formato do diário inalterado.
+    """
+    h = read_history(BytesIO(source))
+    digest = hashlib.sha256(source).hexdigest()
+    events = [['H',digest,str(i),'',dumps(row),''] for i,row in enumerate(h.rows)]
+    manifest = ['I',digest,fingerprint(events),str(len(events)),'','']
+    if measure(events + [manifest])[0] <= limit:
+        return h, digest, events, manifest, [events + [manifest]]
+    chunks, size, overhead = [[]], 0, measure([])[0]
+    for row in events:
+        cost = len(json.dumps(row, ensure_ascii=False).encode()) + 2
+        if chunks[-1] and overhead + size + cost > limit:
+            chunks.append([]); size = 0
+        chunks[-1].append(row); size += cost
+    return h, digest, events, manifest, chunks + [[manifest]]
+
+
 def read_snapshot(response):
     # values.get omite células vazias no fim de cada linha.
     rows = [list(r) + [''] * (6-len(r)) for r in response.get('values', [])]
@@ -89,29 +119,45 @@ class SheetsProof:
         return read_snapshot(self.transport.get())
 
     def _append(self, rows):
-        if any(len(str(v)) > 50000 for row in rows for v in row):
+        size, cell = measure(rows)
+        if cell > MAX_CELL:
             raise ValueError('Célula excede 50 mil caracteres')
-        body = {'values':rows}
-        if len(json.dumps(body, ensure_ascii=False).encode()) > 2_000_000:
+        if size > MAX_BYTES:
             raise ValueError('Requisição excede 2 MB nesta prova')
-        return self.transport.append(body, range='journal!A:F', valueInputOption='RAW',
+        return self.transport.append({'values':rows}, range='journal!A:F', valueInputOption='RAW',
                                      insertDataOption='INSERT_ROWS')
 
     def import_history(self, source):
-        h = read_history(BytesIO(source))
-        digest = hashlib.sha256(source).hexdigest()
+        _, digest, events, manifest, chunks = history_plan(source)
         with self.coordinator.lock:
-            state = self.state()
+            response = self.transport.get()
+            state = read_snapshot(response)
             if state['history_source']:
                 if state['history_source'] != digest:
                     raise ValueError('Não substituir histórico')
                 return False
-            events = [['H',digest,str(i),'',dumps(row),''] for i,row in enumerate(h.rows)]
-            manifest = ['I',digest,fingerprint(events),str(len(events)),'','']
-            try:
-                self._append(events + [manifest])
-            except (TimeoutError, ConnectionError):
-                pass
+            if len(chunks) == 1:
+                try:
+                    self._append(chunks[0])
+                except (TimeoutError, ConnectionError):
+                    pass
+            else:
+                # Pré-condição: nenhuma outra escrita intercalada (antes da operação, um operador,
+                # sob o lock). H órfãos de tentativa interrompida são ignorados pelo leitor.
+                if any(row and row[0] not in ('H', 'I') for row in response.get('values', [])):
+                    raise ValueError('Diário já tem registros: importação em partes recusada')
+                try:
+                    for chunk in chunks[:-1]:
+                        self._append(chunk)
+                except (TimeoutError, ConnectionError):
+                    raise Unconfirmed('Importação interrompida; repetir a mesma fonte') from None
+                tail = [list(r) + [''] * (6-len(r)) for r in self.transport.get().get('values', [])]
+                if tail[-len(events):] != events:
+                    raise Unconfirmed('Partes não confirmadas em sequência; repetir a mesma fonte')
+                try:
+                    self._append([manifest])
+                except (TimeoutError, ConnectionError):
+                    pass
             if self.state()['history_source'] != digest:
                 raise Unconfirmed('Importação não confirmada; repetir a mesma fonte')
             return True

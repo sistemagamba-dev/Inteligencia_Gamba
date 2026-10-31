@@ -48,12 +48,17 @@ class LocalDrive:
 class GoogleDrive:
     """Drive v3 com identidade configurada pela equipe técnica, fora da interface.
 
-    Raiz deve começar por JANUS_TESTE; filhos devem estar diretamente nessa raiz.
+    Raiz deve começar pelo prefixo do ambiente (JANUS_TESTE em homologação,
+    JANUS_PRODUCAO em produção); filhos devem estar diretamente nessa raiz.
     Isso é uma barreira contra enganos de configuração, não substitui permissões.
     """
     API = 'https://www.googleapis.com/drive/v3/files'
+    PREFIXES = {'JANUS_TESTE': 'Use uma raiz de teste dedicada',
+                'JANUS_PRODUCAO': 'Use a raiz de produção dedicada'}
 
-    def __init__(self, session, root, entrada, processados, falhas):
+    def __init__(self, session, root, entrada, processados, falhas, prefix='JANUS_TESTE'):
+        if prefix not in self.PREFIXES:
+            raise ValueError('Prefixo de raiz desconhecido')
         self.session = session
         self.root, self.entrada, self.processados, self.falhas = root, entrada, processados, falhas
         if len({root, entrada, processados, falhas}) != 4:
@@ -62,15 +67,17 @@ class GoogleDrive:
             if not re.fullmatch(r'[A-Za-z0-9_-]+', value):
                 raise ValueError('Pasta inválida')
         parent = self._metadata(root)
-        if not parent['name'].startswith('JANUS_TESTE') or parent.get('trashed'):
-            raise ValueError('Use uma raiz de teste dedicada')
+        # Prefixos disjuntos: raiz de teste nunca serve à produção e vice-versa.
+        if (not parent['name'].startswith(prefix) or parent.get('trashed') or
+                any(parent['name'].startswith(p) for p in self.PREFIXES if p != prefix)):
+            raise ValueError(self.PREFIXES[prefix])
         if parent['mimeType'] != 'application/vnd.google-apps.folder':
             raise ValueError('Raiz inválida')
         for folder in (entrada, processados, falhas):
             meta = self._metadata(folder)
             if (meta.get('parents') != [root] or meta.get('trashed') or
                     meta['mimeType'] != 'application/vnd.google-apps.folder'):
-                raise ValueError('Pasta fora da raiz de teste')
+                raise ValueError('Pasta fora da raiz')
 
     def _request(self, method, suffix='', **kwargs):
         response = self.session.request(method, self.API + suffix, timeout=60, **kwargs)
@@ -108,7 +115,7 @@ class GoogleDrive:
         if meta.get('trashed'):
             raise ValueError('Arquivo indisponível')
         if meta.get('parents') not in ([self.entrada], [self.processados]):
-            raise ValueError('Arquivo fora das pastas de teste')
+            raise ValueError('Arquivo fora das pastas')
         content = self._request('GET', '/' + file_id, params={
             'alt': 'media', 'supportsAllDrives': 'true'}).content
         if hashlib.sha256(content).hexdigest() != expected_digest:

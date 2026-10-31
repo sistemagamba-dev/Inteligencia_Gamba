@@ -1,14 +1,18 @@
 """Operações da equipe técnica, nunca exigidas dos assessores."""
 import argparse
+from io import BytesIO
 from pathlib import Path
 import os
 import sqlite3
 import tempfile
+from types import SimpleNamespace
 import uuid
 
 from janus import HEADERS
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 from storage import Store
+
+EXCEL_CELL = 32767
 
 
 def restore(database, backup):
@@ -45,6 +49,54 @@ def restore(database, backup):
             store.close()
     finally:
         source.close()
+
+
+def history_metrics(source):
+    """Somente métricas agregadas do histórico; nenhum valor de célula."""
+    from experiments.sheets_poc.store import history_plan, measure, MAX_BYTES, MAX_CELL
+    h, _, events, manifest, chunks = history_plan(source)
+    size, cell = measure(events + [manifest])
+    return {'linhas': len(h.rows), 'com_protocolo': h.protocol_rows, 'unicos': len(h.keys),
+            'excesso_duplicados': h.protocol_rows - len(h.keys), 'bytes_json': size,
+            'maior_celula': cell, 'appends': len(chunks), 'cabe_em_um_append': size <= MAX_BYTES,
+            'celulas_ok': cell <= MAX_CELL}
+
+
+def import_history_sheets(path, components):
+    """Valida o arquivo antes de abrir credenciais; components só é chamado se passar."""
+    source = Path(path).read_bytes()
+    if not history_metrics(source)['celulas_ok']:
+        raise ValueError('Histórico tem célula acima de 50 mil caracteres; nada foi gravado')
+    return components().proof.import_history(source)
+
+
+def backup_sheets(path, components):
+    """Cópia local nova: base lógica (se íntegra) + aba journal com A:F brutos. Só lê o Google."""
+    from experiments.sheets_poc.store import SheetsProof
+    path = Path(path)
+    if path.exists():
+        raise ValueError('Destino já existe; escolha um arquivo novo')
+    response = components().proof.transport.get() # Uma leitura: as duas abas vêm do mesmo instante.
+    rows = [list(r) + [''] * (6-len(r)) for r in response.get('values', [])]
+    if any(len(str(v)) > EXCEL_CELL for row in rows for v in row):
+        raise ValueError('Célula acima do limite do Excel; cópia não gerada')
+    logical, buffer = True, BytesIO()
+    try:
+        SheetsProof(SimpleNamespace(get=lambda: response)).export(buffer)
+        book = load_workbook(BytesIO(buffer.getvalue()))
+    except ValueError:
+        logical, book = False, Workbook()  # Diário inconsistente: preserva ao menos a cópia bruta.
+        book.remove(book.active)
+    sheet = book.create_sheet('journal')
+    for row in rows:
+        sheet.append(row)
+    for row in (r for ws in book.worksheets for r in ws.iter_rows()):
+        for cell in row:
+            if cell.data_type == 'f': cell.data_type = 's'
+    output = BytesIO(); book.save(output); book.close()
+    with open(path, 'xb') as file:
+        file.write(output.getvalue())
+    return {'linhas_journal': len(rows), 'base_logica': logical}
 
 
 def demo(root):
@@ -93,6 +145,10 @@ if __name__ == '__main__':
     cmd = sub.add_parser('demo'); cmd.add_argument('root', type=Path)
     cmd = sub.add_parser('import-history-sheets', help='Importa uma única vez o histórico no diário do Sheets')
     cmd.add_argument('file', type=Path)
+    cmd = sub.add_parser('verificar-historico', help='Somente leitura: métricas agregadas do histórico')
+    cmd.add_argument('file', type=Path)
+    cmd = sub.add_parser('backup-sheets', help='Somente leitura: copia base e diário para um .xlsx novo')
+    cmd.add_argument('file', type=Path)
     for name in ('import-history', 'backup', 'restore'):
         cmd = sub.add_parser(name)
         cmd.add_argument('database', type=Path)
@@ -100,10 +156,18 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.command == 'demo':
         demo(args.root)
+    elif args.command == 'verificar-historico':
+        for key, value in history_metrics(args.file.read_bytes()).items():
+            print(f'{key}: {value}')
     elif args.command == 'import-history-sheets':
         from runtime import components
-        imported = components().proof.import_history(args.file.read_bytes())
+        imported = import_history_sheets(args.file, components)
         print('Histórico importado.' if imported else 'Mesmo histórico já importado; nada alterado.')
+    elif args.command == 'backup-sheets':
+        from runtime import components
+        result = backup_sheets(args.file, components)
+        print(f"Cópia salva: {result['linhas_journal']} linhas do diário." +
+              ('' if result['base_logica'] else ' ATENÇÃO: diário inconsistente; só a cópia bruta foi salva.'))
     elif args.command == 'restore':
         restore(args.database, args.file)
     else:

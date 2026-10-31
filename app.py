@@ -1,4 +1,4 @@
-"""Interface do protótipo: uma tabela, uma aprovação. Apenas ambiente de teste."""
+"""Interface do protótipo: uma tabela, uma aprovação. Ambiente definido pela equipe técnica."""
 from io import BytesIO
 
 import pandas as pd
@@ -25,7 +25,12 @@ def components():
 
 def main():
     st.set_page_config(page_title='JANUS | Inteligência Gambá', page_icon='📄', layout='wide')
-    st.caption('INTELIGÊNCIA GAMBÁ  /  AMBIENTE DE TESTE')
+    try:
+        producao = runtime.producao()
+    except ValueError:
+        st.error('Configuração inválida. Solicite à equipe técnica a revisão da configuração.')
+        return
+    st.caption('INTELIGÊNCIA GAMBÁ  /  ' + ('OPERAÇÃO' if producao else 'AMBIENTE DE TESTE'))
     st.title('Protocolos JANUS')
     st.write('Coloque os PDFs na pasta de entrada. Processe, confira e aprove o lote para registrar.')
     if runtime.mode() == 'google' and not getattr(st.user, 'is_logged_in', False):
@@ -47,12 +52,13 @@ def main():
     try:
         flow = components()
     except Exception:
-        st.error('O ambiente de teste está indisponível. Solicite à equipe técnica a revisão da configuração.')
+        st.error(('O sistema' if producao else 'O ambiente de teste') +
+                 ' está indisponível. Solicite à equipe técnica a revisão da configuração.')
         return
     drive = flow.drive
     if hasattr(drive, 'entrada'):
         st.link_button('Abrir pasta de entrada', 'https://drive.google.com/drive/folders/' + drive.entrada)
-    else:
+    elif not producao:
         st.info('Demonstração com PDFs inventados. Nenhum dado do gabinete é utilizado.')
     if st.button('Processar PDFs', type='primary'):
         try:
@@ -125,7 +131,7 @@ def main():
                              'Não foi possível concluir. Processe novamente; os registros confirmados serão preservados.')
                 except Exception:
                     st.error('Não foi possível concluir. Processe novamente; os registros confirmados serão preservados.')
-            if not hasattr(drive, 'entrada'):
+            if not hasattr(drive, 'entrada') and not producao:
                 with st.expander('Consultar PDFs de demonstração'):
                     for source in batch['rows']:
                         try:
@@ -166,7 +172,7 @@ def main():
             st.error('Não foi possível preparar o Excel. Tente novamente.')
     if 'export' in st.session_state:
         st.download_button('Baixar Excel (.xlsx)', st.session_state.export,
-            file_name='JANUS-teste.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            file_name='JANUS.xlsx' if producao else 'JANUS-teste.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 
 if __name__ == '__main__':
