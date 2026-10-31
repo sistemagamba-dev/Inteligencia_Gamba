@@ -9,7 +9,8 @@ import json
 
 
 class SimulatedSheets:
-    def __init__(self):
+    def __init__(self, range_='journal!A:F'):
+        self.range_=range_
         self.rows=[]
         self.lock=Lock()
         self.failures=[]
@@ -37,7 +38,7 @@ class SimulatedSheets:
         return {'updates':{'updatedRows':len(body['values'])}}
 
     def append(self, body, *, range, valueInputOption, insertDataOption):
-        if (range,valueInputOption,insertDataOption) != ('journal!A:F','RAW','INSERT_ROWS'):
+        if (range,valueInputOption,insertDataOption) != (self.range_,'RAW','INSERT_ROWS'):
             raise ValueError('Somente append RAW INSERT_ROWS nesta prova')
         if any(len(row)!=6 for row in body['values']):raise ValueError('Linha inválida')
         with self.lock:
