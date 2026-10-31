@@ -1,0 +1,16 @@
+PDFs sintéticos da ENTRADA de homologação (não versionados), fluxo real workflow.read_record()
+  eventos.pdf sha256=490f5ed1e837184dcd7d21186f51224d7def838fd22e63bc140a209c1d19f8b5
+  zeladoria.pdf sha256=fd4634548be66375c87d4a16ea0d39cc35039779702fc4f15b25fbddc23b9cbb
+
+== etapa3/streamlit-sheets 49c7a5a (publicada)
+eventos.pdf FALHA TypeError expected string or bytes-like object, got 'NoneType'
+zeladoria.pdf OK C000000000000088801 | OCORRÊNCIA: 'TESTE ZELADORIA: trocar lampada da Rua Exemplo 100. Anexar imagens (opcional) Anexar documento (opcional)' | avisos: []
+
+== etapa3/ocorrencia-extracao (correção)
+eventos.pdf OK C000000000000088802 | OCORRÊNCIA: 'solicitação de autorização para evento-teste cultural na praça.' | avisos: []
+zeladoria.pdf OK C000000000000088801 | OCORRÊNCIA: 'TESTE ZELADORIA: trocar lampada da Rua Exemplo 100.' | avisos: []
+
+== suíte completa
+Ran 75 tests in 3.213s
+
+OK
