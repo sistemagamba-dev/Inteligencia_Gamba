@@ -38,6 +38,7 @@ Etapa 3 (homologação).
 | `JANUS_ENTRADA`, `JANUS_PROCESSADOS`, `JANUS_FALHAS` | IDs | filhos diretos da raiz |
 | `JANUS_SHEET_ID` | ID da planilha | em produção, diferente da homologação |
 | `JANUS_ALLOWED_EMAILS`, `JANUS_GOOGLE_SA_JSON` | — | como na Etapa 3 |
+| `JANUS_ADMIN_EMAILS` | e-mails separados por vírgula | administradores do Adm; inválido = recusa |
 
 ## Comandos da equipe técnica
 
@@ -75,6 +76,26 @@ Ensaio: `tests/test_recuperacao.py` (3 cenários) e lote em tamanho real com his
 de 3.271 linhas, 54 duplicatas e 40 registros: base recuperada idêntica, 1 append
 (`docs/evidence/etapa4/recuperacao.txt`).
 
+## Adm e acessos (`acesso.py`)
+
+- **Quem entra** (modo google): administradores de `JANUS_ADMIN_EMAILS` (configuração; vazio = sem Adm;
+  e-mail inválido recusa o início antes das credenciais), a lista fixa `JANUS_ALLOWED_EMAILS` (mantida
+  por compatibilidade) ou quem está ativo na aba `usuarios` da planilha (`usuarios!A:F`; o `journal` não
+  muda). O cadastro nunca concede papel de Adm. Falha de leitura nega o acesso.
+- **Sessão aberta**: a autorização fica em cache por até 30 s (edições da tabela não gastam cota);
+  Processar, Aprovar, Tentar arquivar, Preparar Excel e toda ação do Adm conferem de novo na hora. Sem
+  acesso, a sessão é limpa e aparece "Seu acesso foi removido.".
+- **Adm** (expansor discreto, só para administradores; cada clique confere de novo): estado do
+  compartilhamento da pasta `entrada`, adicionar e-mail, lista de assessores com Remover, pendências com
+  Revogar. Mudanças de permissão em sequência (um lock por processo).
+- **Adicionar**: compartilha só a `entrada` (Editor) e depois registra no cadastro. Se compartilhar
+  falhar, nada é liberado; se o registro falhar, a pasta fica compartilhada e aparece como pendência.
+- **Remover**: bloqueia primeiro no cadastro e depois revoga a permissão direta na `entrada`. Se a
+  revogação falhar, o app já está bloqueado e a permissão aparece em pendências para Revogar. Nunca
+  informa "removido" com acesso restante. Administradores, proprietários da pasta, a conta de serviço e
+  a lista fixa não podem ser alterados pelo Adm. Arquivos que o próprio assessor enviou podem continuar
+  sendo dele no Drive: isso não é revogado aqui.
+
 ## Gates humanos (não executados aqui)
 
 Planilha e pastas `JANUS_PRODUCAO*`, conta de serviço e permissões, segredos de produção,
@@ -83,4 +104,5 @@ dependem de aprovação humana pontual.
 
 ## Testes
 
-92 testes OK: os 74 anteriores, 15 em `tests/test_etapa4.py` e 3 do ensaio de recuperação em `tests/test_recuperacao.py`.
+116 testes OK: os 74 anteriores, 15 em `tests/test_etapa4.py`, 3 do ensaio de recuperação em `tests/test_recuperacao.py`,
+17 em `tests/test_acesso.py` e 7 de acesso na interface em `tests/test_ui.py` (somente fakes).
