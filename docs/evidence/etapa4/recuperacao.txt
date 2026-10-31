@@ -1,0 +1,15 @@
+Ensaio de recuperação — dados sintéticos, Sheets simulado, Drive local (31/10/2026)
+
+test_backup_loss_and_recovery_in_new_base (tests.test_recuperacao.RecoveryRehearsal.test_backup_loss_and_recovery_in_new_base) ... ok
+test_backup_refuses_overwrite_and_import_refuses_different_history (tests.test_recuperacao.RecoveryRehearsal.test_backup_refuses_overwrite_and_import_refuses_different_history) ... ok
+test_records_after_last_backup_are_recovered_by_reprocessing (tests.test_recuperacao.RecoveryRehearsal.test_records_after_last_backup_are_recovered_by_reprocessing) ... ok
+Ran 3 tests in 0.239s
+OK
+
+Lote em tamanho real (histórico sintético com o porte da COLAB):
+{'historico_linhas': 3271, 'registrados': 40, 'arquivados': 40, 'abas_backup': {'JANUS 2026': 3313, 'journal': 3353}, 'backup_bytes': 325108, 'reimport_appends': 1, 'identico_A_J': True, 'linhas_recuperadas': 3311, 'protocolos': 3200, 'unicos': 3146, 'excesso_duplicatas': 54, 'registros_pos_importacao_presentes': 40, 'segundos': {'importar': 0.88, 'backup': 1.39, 'recuperar': 0.89}}
+
+Suíte completa:
+Ran 92 tests in 7.216s
+
+OK
